@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import CartDrawer from './components/cart/CartDrawer';
+import ScrollToTop from './components/common/ScrollToTop';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
@@ -16,6 +17,7 @@ import AdminDashboard from './pages/AdminDashboard';
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#0B0B0B] text-white">
+      <ScrollToTop />
       <Navbar />
       <CartDrawer />
       <main className="flex-1">
