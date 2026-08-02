@@ -82,48 +82,19 @@ export default function Checkout() {
       });
 
       const reference = paystackInit?.data?.reference || createdOrder.invoiceNumber || `LUX_${Date.now()}`;
-      const accessCode = paystackInit?.data?.access_code;
       const authUrl = paystackInit?.data?.authorization_url;
-      const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
-      // 3. Trigger Paystack Popup Inline JS if live key is present
-      if (window.PaystackPop && paystackKey && paystackKey.startsWith('pk_') && !paystackKey.includes('mock')) {
-        try {
-          const handler = window.PaystackPop.setup({
-            key: paystackKey,
-            email: formData.email,
-            amount: Math.round(totalPrice * 100),
-            ref: reference,
-            access_code: accessCode,
-            onClose: function () {
-              toast.error('Payment window closed');
-              setLoading(false);
-            },
-            callback: async function (response) {
-              toast.loading('Verifying transaction securely...');
-              try {
-                await API.get(`/paystack/verify/${response.reference}?orderId=${createdOrder._id}`);
-              } catch (e) {}
-              clearCart();
-              toast.success('Payment verified successfully!');
-              navigate(`/order-success?reference=${response.reference}&orderId=${createdOrder._id}`);
-            },
-          });
-          handler.openIframe();
-          return;
-        } catch (err) {
-          console.warn('Paystack popup launch error:', err);
-        }
-      }
-
-      // Seamless completion & redirect
+      // 3. Clear cart & Redirect to Paystack Checkout URL
       clearCart();
-      toast.success('Order placed successfully!');
-      if (authUrl && authUrl.startsWith('http') && !authUrl.includes(window.location.hostname)) {
-        window.location.href = authUrl;
-      } else {
-        navigate(`/order-success?reference=${reference}&orderId=${createdOrder._id}`);
-      }
+      toast.success('Redirecting to Paystack Payment Gateway...');
+
+      setTimeout(() => {
+        if (authUrl) {
+          window.location.href = authUrl;
+        } else {
+          navigate(`/order-success?reference=${reference}&orderId=${createdOrder._id}`);
+        }
+      }, 500);
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error(error.response?.data?.message || error.message || 'Checkout failed');
