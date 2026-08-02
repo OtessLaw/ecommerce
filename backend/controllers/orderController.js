@@ -27,13 +27,24 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: 'No order items provided' });
     }
 
+    // Normalize order items to ensure title, price, quantity, and image are always defined
+    const normalizedItems = orderItems.map((item) => ({
+      product: item.product || item._id || 'prod_1',
+      title: item.title || item.name || 'J&J Vintage Item',
+      price: Number(item.price || 0),
+      quantity: Number(item.quantity || 1),
+      selectedColor: item.selectedColor || 'Standard',
+      selectedSize: item.selectedSize || 'M',
+      image: item.image || (Array.isArray(item.images) ? item.images[0] : item.images) || 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80',
+    }));
+
     const invoiceNum = generateInvoiceNumber();
 
     if (Order.db && Order.db.readyState === 1) {
       const order = new Order({
         user: req.user ? req.user._id : undefined,
         guestEmail: guestEmail || (req.user ? req.user.email : 'guest@example.com'),
-        orderItems,
+        orderItems: normalizedItems,
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -64,7 +75,7 @@ const createOrder = async (req, res) => {
       _id: `ord_${Date.now()}`,
       user: req.user ? req.user._id : 'guest_user',
       guestEmail: guestEmail || (req.user ? req.user.email : 'guest@example.com'),
-      orderItems,
+      orderItems: normalizedItems,
       shippingAddress,
       paymentMethod,
       itemsPrice,

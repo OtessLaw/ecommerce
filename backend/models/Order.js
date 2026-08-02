@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  title: { type: String, required: true },
-  price: { type: Number, required: true },
-  quantity: { type: Number, required: true, min: 1 },
-  selectedColor: { type: String },
-  selectedSize: { type: String },
-  image: { type: String, required: true },
+  product: { type: mongoose.Schema.Types.Mixed, required: true },
+  title: { type: String, required: true, default: 'J&J Vintage Item' },
+  price: { type: Number, required: true, default: 0 },
+  quantity: { type: Number, required: true, min: 1, default: 1 },
+  selectedColor: { type: String, default: 'Standard' },
+  selectedSize: { type: String, default: 'M' },
+  image: { type: String, required: true, default: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80' },
 });
 
 const orderSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    user: { type: mongoose.Schema.Types.Mixed },
     guestEmail: { type: String },
     orderItems: [orderItemSchema],
     shippingAddress: {
@@ -21,7 +21,7 @@ const orderSchema = new mongoose.Schema(
       street: { type: String, required: true },
       city: { type: String, required: true },
       state: { type: String, required: true },
-      country: { type: String, default: 'Nigeria' },
+      country: { type: String, default: 'Ghana' },
     },
     paymentMethod: { type: String, enum: ['Paystack', 'CashOnDelivery'], default: 'Paystack' },
     paymentResult: {
