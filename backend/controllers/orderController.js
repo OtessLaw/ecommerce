@@ -52,6 +52,7 @@ const createOrder = async (req, res) => {
         shippingPrice,
         discountAmount,
         totalPrice,
+        orderNumber: invoiceNum,
         invoiceNumber: invoiceNum,
         isPaid: paymentMethod === 'CashOnDelivery' ? false : false,
       });
@@ -83,6 +84,7 @@ const createOrder = async (req, res) => {
       shippingPrice,
       discountAmount,
       totalPrice,
+      orderNumber: invoiceNum,
       invoiceNumber: invoiceNum,
       isPaid: false,
       orderStatus: 'Pending',

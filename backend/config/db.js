@@ -6,6 +6,17 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
     });
     console.log(`[MongoDB] Connected: ${conn.connection.host}`);
+
+    // Drop stale unique index on orderNumber_1 if present on MongoDB Atlas
+    mongoose.connection.once('open', async () => {
+      try {
+        await mongoose.connection.collections.orders?.dropIndex('orderNumber_1');
+        console.log('[MongoDB Index Cleanup] Dropped stale orderNumber_1 index');
+      } catch (err) {
+        // Index already removed or not present
+      }
+    });
+
     return true;
   } catch (error) {
     console.warn(`[MongoDB Warning] Direct MongoDB connection failed (${error.message}).`);
