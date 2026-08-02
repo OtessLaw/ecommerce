@@ -1,0 +1,69 @@
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0B0B0B] text-slate-100 font-sans overflow-x-hidden;
+  }
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0B0B;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9E7B3B;
+}
+
+/* Luxury Glassmorphism & Gold Styling */
+.glass-panel {
+  background: rgba(20, 20, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF0B9 0%, #D4AF37 50%, #9E7B3B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-btn {
+  background: linear-gradient(135deg, #D4AF37 0%, #B89028 100%);
+  color: #000;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.gold-btn:hover {
+  background: linear-gradient(135deg, #FFF0B9 0%, #D4AF37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.45);
+}
+
+/* Swiper Customizations */
+.swiper-pagination-bullet {
+  background: #8E8E93 !important;
+  opacity: 0.5;
+}
+.swiper-pagination-bullet-active {
+  background: #D4AF37 !important;
+  opacity: 1;
+  width: 24px !important;
+  border-radius: 4px !important;
+}
