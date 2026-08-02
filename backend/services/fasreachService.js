@@ -2,9 +2,9 @@ const axios = require('axios');
 
 class FasreachService {
   constructor() {
-    this.apiKey = process.env.FASREACH_API_KEY || '';
+    this.apiKey = process.env.FASREACH_API_KEY || 'bms_live_1785502841008_np14a00zkx';
     this.senderId = process.env.FASREACH_SENDER_ID || 'JJVINTAGE';
-    this.baseURL = 'https://api.fasreach.com/v1/sms/send';
+    this.baseURL = 'https://fasreach.com/api/sms/send';
   }
 
   getCredentials() {
@@ -20,64 +20,71 @@ class FasreachService {
     return { apiKey: this.apiKey, senderId: this.senderId };
   }
 
-  formatPhoneNumber(phone) {
-    if (!phone) return '';
-    let cleaned = phone.toString().replace(/[^0-9]/g, '');
-    // Convert local Ghana 10-digit number e.g. 0241234567 -> 233241234567
-    if (cleaned.startsWith('0') && cleaned.length === 10) {
-      cleaned = '233' + cleaned.substring(1);
-    }
-    return cleaned;
-  }
-
   async sendSMS(recipient, message) {
     const { apiKey, senderId } = this.getCredentials();
-    const formattedRecipient = this.formatPhoneNumber(recipient);
+    const cleanPhone = (recipient || '').toString().replace(/[^0-9]/g, '');
 
-    if (apiKey && !apiKey.includes('your_fasreach') && !apiKey.includes('mock')) {
-      try {
-        console.log(`[FastReach SMS API] Sending to ${formattedRecipient} with SenderID ${senderId}...`);
-        const response = await axios.post(
-          this.baseURL,
-          {
-            recipient: formattedRecipient,
-            sender_id: senderId,
-            message: message,
-          },
-          {
-            headers: {
-              'x-api-key': apiKey,
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            timeout: 10000,
-          }
-        );
-        console.log('[FastReach SMS Success]', response.data);
-        return { success: true, data: response.data };
-      } catch (error) {
-        console.error('[FastReach SMS Error]', error.response?.data || error.message);
-        return { success: false, error: error.response?.data || error.message };
-      }
+    if (!cleanPhone) {
+      console.warn('[FastReach SMS Warning] Empty recipient phone number');
+      return { success: false, message: 'No phone number provided' };
     }
 
-    // FastReach Simulation Mode when live API key is not yet configured
-    console.log(`\n========================================`);
-    console.log(`📱 [FastReach SMS Simulation]`);
-    console.log(`To: ${formattedRecipient || recipient}`);
-    console.log(`Sender ID: ${senderId}`);
-    console.log(`Message: ${message}`);
-    console.log(`========================================\n`);
+    try {
+      console.log(`[FastReach SMS Dispatch] To: ${cleanPhone} | Sender: ${senderId} | API Key: ${apiKey.substring(0, 10)}...`);
+      
+      const response = await axios.post(
+        this.baseURL,
+        {
+          to: cleanPhone,
+          message: message,
+          sender: senderId,
+        },
+        {
+          headers: {
+            'x-api-key': apiKey,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        }
+      );
 
-    return {
-      success: true,
-      simulated: true,
-      message: 'FastReach SMS logged in simulation mode (Enter live API key in Admin Settings to deliver real-time SMS)',
-    };
+      console.log('[FastReach SMS Delivered Success]', response.data);
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('[FastReach SMS Delivery Error]', error.response?.data || error.message);
+      
+      // Fallback try with default FASREACH sender if custom sender ID fails
+      if (senderId !== 'FASREACH') {
+        try {
+          console.log(`[FastReach SMS Retry] Trying fallback sender FASREACH...`);
+          const retryRes = await axios.post(
+            this.baseURL,
+            {
+              to: cleanPhone,
+              message: message,
+              sender: 'FASREACH',
+            },
+            {
+              headers: {
+                'x-api-key': apiKey,
+                'Content-Type': 'application/json',
+              },
+              timeout: 10000,
+            }
+          );
+          console.log('[FastReach SMS Retry Success]', retryRes.data);
+          return { success: true, data: retryRes.data };
+        } catch (retryErr) {
+          console.error('[FastReach SMS Retry Error]', retryErr.response?.data || retryErr.message);
+        }
+      }
+
+      return { success: false, error: error.response?.data || error.message };
+    }
   }
 
   async sendOrderConfirmation(phone, invoiceNumber, amount) {
-    const message = `J&J VINTAGE: Thank you! Your order ${invoiceNumber} for GHc ${amount} has been placed successfully. Track your status on our site.`;
+    const message = `J&J VINTAGE: Your order ${invoiceNumber} for GHc ${amount} has been confirmed! Thank you for shopping with us.`;
     return this.sendSMS(phone, message);
   }
 
@@ -87,7 +94,7 @@ class FasreachService {
   }
 
   async sendOrderStatusUpdate(phone, invoiceNumber, status) {
-    const message = `J&J VINTAGE: Your order ${invoiceNumber} status has been updated to: ${status.toUpperCase()}. Thank you for shopping with us!`;
+    const message = `J&J VINTAGE: Your order ${invoiceNumber} status has been updated to: ${status.toUpperCase()}.`;
     return this.sendSMS(phone, message);
   }
 }
