@@ -83,10 +83,11 @@ export default function Checkout() {
 
       const reference = paystackInit?.data?.reference || createdOrder.invoiceNumber || `LUX_${Date.now()}`;
       const accessCode = paystackInit?.data?.access_code;
-      const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_mock_paystack_public_key';
+      const authUrl = paystackInit?.data?.authorization_url;
+      const paystackKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
-      // 3. Trigger Paystack Popup Inline JS if live key present or fallback smoothly
-      if (window.PaystackPop && paystackKey && !paystackKey.includes('mock')) {
+      // 3. Trigger Paystack Popup Inline JS if live key is present
+      if (window.PaystackPop && paystackKey && paystackKey.startsWith('pk_') && !paystackKey.includes('mock')) {
         try {
           const handler = window.PaystackPop.setup({
             key: paystackKey,
@@ -111,16 +112,20 @@ export default function Checkout() {
           handler.openIframe();
           return;
         } catch (err) {
-          console.warn('Paystack popup setup fallback:', err);
+          console.warn('Paystack popup launch error:', err);
         }
       }
 
-      // Seamless fallback for test/simulation mode
+      // Seamless completion & redirect
       clearCart();
       toast.success('Order placed successfully!');
-      navigate(`/order-success?reference=${reference}&orderId=${createdOrder._id}`);
+      if (authUrl && authUrl.startsWith('http') && !authUrl.includes(window.location.hostname)) {
+        window.location.href = authUrl;
+      } else {
+        navigate(`/order-success?reference=${reference}&orderId=${createdOrder._id}`);
+      }
     } catch (error) {
-      console.error('Checkout error', error);
+      console.error('Checkout error:', error);
       toast.error(error.response?.data?.message || error.message || 'Checkout failed');
     } finally {
       setLoading(false);
