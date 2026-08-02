@@ -77,9 +77,9 @@ export default function ProductCard({ product }) {
 
         {/* Price Tag */}
         <div className="flex items-baseline space-x-2 pt-1">
-          <span className="text-base font-extrabold text-white">₦{displayPrice.toLocaleString()}</span>
+          <span className="text-base font-extrabold text-white">GH₵ {displayPrice.toLocaleString()}</span>
           {product.salePrice > 0 && product.price > product.salePrice && (
-            <span className="text-xs text-gray-500 line-through">₦{product.price.toLocaleString()}</span>
+            <span className="text-xs text-gray-500 line-through">GH₵ {product.price.toLocaleString()}</span>
           )}
         </div>
       </div>

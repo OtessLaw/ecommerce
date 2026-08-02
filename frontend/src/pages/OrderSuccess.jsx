@@ -70,7 +70,7 @@ export default function OrderSuccess() {
             </div>
             <div className="flex justify-between pt-2 border-t border-[#2A2A2A] font-bold text-white">
               <span>Total Paid:</span>
-              <span className="text-[#D4AF37]">₦{order.totalPrice?.toLocaleString()}</span>
+              <span className="text-[#D4AF37]">GH₵ {order.totalPrice?.toLocaleString()}</span>
             </div>
           </div>
         )}

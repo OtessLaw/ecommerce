@@ -115,9 +115,9 @@ export default function ProductDetail() {
 
           {/* Price */}
           <div className="flex items-baseline space-x-3 pt-2 border-t border-[#2A2A2A]">
-            <span className="text-3xl font-extrabold text-[#D4AF37]">₦{displayPrice.toLocaleString()}</span>
+            <span className="text-3xl font-extrabold text-[#D4AF37]">GH₵ {displayPrice.toLocaleString()}</span>
             {product.salePrice > 0 && product.price > product.salePrice && (
-              <span className="text-lg text-gray-500 line-through">₦{product.price.toLocaleString()}</span>
+              <span className="text-lg text-gray-500 line-through">GH₵ {product.price.toLocaleString()}</span>
             )}
           </div>
 

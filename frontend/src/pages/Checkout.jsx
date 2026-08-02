@@ -16,9 +16,9 @@ export default function Checkout() {
     email: user ? user.email : '',
     phone: user ? user.phone || '' : '',
     street: '',
-    city: 'Lagos',
-    state: 'Lagos State',
-    country: 'Nigeria',
+    city: 'Accra',
+    state: 'Greater Accra',
+    country: 'Ghana',
     paymentMethod: 'Paystack',
   });
 
@@ -275,7 +275,7 @@ export default function Checkout() {
                   <p className="font-semibold text-white truncate">{item.title}</p>
                   <p className="text-[10px] text-gray-400">Qty: {item.quantity} | {item.selectedSize}</p>
                 </div>
-                <span className="font-bold text-[#D4AF37]">₦{(item.price * item.quantity).toLocaleString()}</span>
+                <span className="font-bold text-[#D4AF37]">GH₵ {(item.price * item.quantity).toLocaleString()}</span>
               </div>
             ))}
           </div>
@@ -283,25 +283,25 @@ export default function Checkout() {
           <div className="space-y-2 border-t border-[#2A2A2A] pt-4 text-xs text-gray-400">
             <div className="flex justify-between">
               <span>Items Subtotal</span>
-              <span className="text-white">₦{itemsPrice.toLocaleString()}</span>
+              <span className="text-white">GH₵ {itemsPrice.toLocaleString()}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-[#D4AF37]">
                 <span>Coupon Discount</span>
-                <span>-₦{discountAmount.toLocaleString()}</span>
+                <span>-GH₵ {discountAmount.toLocaleString()}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span>VAT (7.5%)</span>
-              <span className="text-white">₦{vatAmount.toLocaleString()}</span>
+              <span>VAT (5%)</span>
+              <span className="text-white">GH₵ {vatAmount.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping Fee</span>
-              <span className="text-white">{shippingPrice === 0 ? 'FREE' : `₦${shippingPrice.toLocaleString()}`}</span>
+              <span className="text-white">{shippingPrice === 0 ? 'FREE' : `GH₵ ${shippingPrice.toLocaleString()}`}</span>
             </div>
             <div className="flex justify-between text-base font-extrabold text-white pt-2 border-t border-[#2A2A2A]">
               <span>Grand Total</span>
-              <span className="text-[#D4AF37]">₦{totalPrice.toLocaleString()}</span>
+              <span className="text-[#D4AF37]">GH₵ {totalPrice.toLocaleString()}</span>
             </div>
           </div>
 
@@ -311,7 +311,7 @@ export default function Checkout() {
             className="w-full gold-btn py-4 rounded-xl text-xs font-extrabold uppercase tracking-widest flex items-center justify-center space-x-2"
           >
             <FiLock size={16} />
-            <span>{loading ? 'PROCESSING...' : `PAY ₦${totalPrice.toLocaleString()} VIA PAYSTACK`}</span>
+            <span>{loading ? 'PROCESSING...' : `PAY GH₵ ${totalPrice.toLocaleString()} VIA PAYSTACK`}</span>
           </button>
         </div>
       </form>

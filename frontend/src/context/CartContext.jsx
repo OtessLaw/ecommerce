@@ -91,8 +91,8 @@ export const CartProvider = ({ children }) => {
   const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const discountAmount = coupon ? Math.round((itemsPrice * coupon.discountPercentage) / 100) : 0;
   const taxableAmount = Math.max(0, itemsPrice - discountAmount);
-  const vatAmount = Math.round(taxableAmount * 0.075); // 7.5% VAT
-  const shippingPrice = itemsPrice >= 250000 || itemsPrice === 0 ? 0 : 5000;
+  const vatAmount = Math.round(taxableAmount * 0.05); // 5% VAT
+  const shippingPrice = itemsPrice >= 50 || itemsPrice === 0 ? 0 : 1;
   const totalPrice = taxableAmount + vatAmount + shippingPrice;
 
   return (

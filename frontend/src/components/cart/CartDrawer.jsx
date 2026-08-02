@@ -118,7 +118,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <span className="text-xs font-extrabold text-[#D4AF37]">
-                        ₦{(item.price * item.quantity).toLocaleString()}
+                        GH₵ {(item.price * item.quantity).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -135,7 +135,7 @@ export default function CartDrawer() {
                 <div className="relative flex-1">
                   <input
                     type="text"
-                    placeholder="Coupon code (e.g. LUXURY15)"
+                    placeholder="Coupon code (e.g. VINTAGE15)"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     className="w-full bg-[#1A1A1A] text-white text-xs rounded-lg pl-8 pr-3 py-2 border border-[#2A2A2A] uppercase"
@@ -158,27 +158,27 @@ export default function CartDrawer() {
               <div className="space-y-1 text-xs text-gray-400 border-t border-[#1F1F1F] pt-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="text-white font-medium">₦{itemsPrice.toLocaleString()}</span>
+                  <span className="text-white font-medium">GH₵ {itemsPrice.toLocaleString()}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-[#D4AF37]">
                     <span>Discount</span>
-                    <span>-₦{discountAmount.toLocaleString()}</span>
+                    <span>-GH₵ {discountAmount.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>VAT (7.5%)</span>
-                  <span className="text-white font-medium">₦{vatAmount.toLocaleString()}</span>
+                  <span>VAT (5%)</span>
+                  <span className="text-white font-medium">GH₵ {vatAmount.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Estimated Shipping</span>
                   <span className="text-white font-medium">
-                    {shippingPrice === 0 ? <span className="text-[#D4AF37] font-bold">FREE</span> : `₦${shippingPrice.toLocaleString()}`}
+                    {shippingPrice === 0 ? <span className="text-[#D4AF37] font-bold">FREE</span> : `GH₵ ${shippingPrice.toLocaleString()}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-white pt-2 border-t border-[#2A2A2A]">
                   <span>Total</span>
-                  <span className="text-[#D4AF37]">₦{totalPrice.toLocaleString()}</span>
+                  <span className="text-[#D4AF37]">GH₵ {totalPrice.toLocaleString()}</span>
                 </div>
               </div>
 

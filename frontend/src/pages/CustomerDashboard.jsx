@@ -109,13 +109,13 @@ export default function CustomerDashboard() {
                             <p className="text-[10px] text-gray-400">Qty: {it.quantity} | {it.selectedSize}</p>
                           </div>
                         </div>
-                        <span className="font-bold text-[#D4AF37]">₦{(it.price * it.quantity).toLocaleString()}</span>
+                        <span className="font-bold text-[#D4AF37]">GH₵ {(it.price * it.quantity).toLocaleString()}</span>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex justify-between items-center pt-3 border-t border-[#2A2A2A] text-xs">
-                    <span className="text-gray-400">Total: <strong className="text-white">₦{ord.totalPrice?.toLocaleString()}</strong></span>
+                    <span className="text-gray-400">Total: <strong className="text-white">GH₵ {ord.totalPrice?.toLocaleString()}</strong></span>
                     <button onClick={() => window.print()} className="text-[#D4AF37] font-bold flex items-center space-x-1 hover:underline">
                       <FiPrinter size={14} />
                       <span>INVOICE</span>

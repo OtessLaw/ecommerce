@@ -241,7 +241,7 @@ export default function AdminDashboard() {
                     <span className="text-xs font-bold uppercase">Total Revenue</span>
                     <div className="p-2 bg-[#D4AF37]/10 text-[#D4AF37] rounded-lg"><FiDollar size={18} /></div>
                   </div>
-                  <p className="text-2xl font-extrabold text-white">₦{stats?.totalRevenue?.toLocaleString() || '14,850,000'}</p>
+                  <p className="text-2xl font-extrabold text-white">GH₵ {stats?.totalRevenue?.toLocaleString() || '148'}</p>
                   <p className="text-[10px] text-emerald-400 font-semibold mt-1">+18.4% this month</p>
                 </div>
 
@@ -314,7 +314,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="p-4 font-mono">{p.sku}</td>
                       <td className="p-4">{p.parentCategory}</td>
-                      <td className="p-4 font-bold text-[#D4AF37]">₦{p.price?.toLocaleString()}</td>
+                      <td className="p-4 font-bold text-[#D4AF37]">GH₵ {p.price?.toLocaleString()}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-[10px] font-bold ${p.stock > 5 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
                           {p.stock} in stock
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
                         <td className="p-4 font-mono font-bold text-white">{o.invoiceNumber}</td>
                         <td className="p-4">{o.shippingAddress?.fullName}</td>
                         <td className="p-4 font-mono">{o.shippingAddress?.phone}</td>
-                        <td className="p-4 font-bold text-[#D4AF37]">₦{o.totalPrice?.toLocaleString()}</td>
+                        <td className="p-4 font-bold text-[#D4AF37]">GH₵ {o.totalPrice?.toLocaleString()}</td>
                         <td className="p-4">
                           <select
                             value={o.orderStatus || 'Pending'}
