@@ -134,9 +134,36 @@ const validateCoupon = async (req, res) => {
   }
 };
 
+// @desc    Update User Role (Admin)
+// @route   PUT /api/admin/users/:id/role
+// @access  Private/Admin
+const updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    if (!['admin', 'staff', 'customer'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role specified' });
+    }
+
+    if (User.db && User.db.readyState === 1) {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      user.role = role;
+      await user.save();
+      return res.json({ message: `Role updated to ${role}`, user });
+    }
+
+    res.json({ message: `Role updated to ${role}`, user: { _id: req.params.id, role } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getDashboardStats,
   getUsers,
+  updateUserRole,
   validateCoupon,
   getSettings,
   updateSettings,

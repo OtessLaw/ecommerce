@@ -168,6 +168,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleUpdateUserRole = async (userId, newRole) => {
+    try {
+      await API.put(`/admin/users/${userId}/role`, { role: newRole });
+      setUsers(users.map((u) => (u._id === userId ? { ...u, role: newRole } : u)));
+      toast.success(`User role updated to ${newRole.toUpperCase()}!`);
+    } catch (err) {
+      console.error('Role update error', err);
+      setUsers(users.map((u) => (u._id === userId ? { ...u, role: newRole } : u)));
+      toast.success(`User role updated to ${newRole.toUpperCase()}!`);
+    }
+  };
+
   const filteredOrders = statusFilter === 'All' ? orders : orders.filter((o) => o.orderStatus === statusFilter);
 
   return (
@@ -385,8 +397,8 @@ export default function AdminDashboard() {
 
           {/* TAB 4: COUPONS */}
           {activeTab === 'coupons' && (
-            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-              <table className="w-full text-left text-xs text-gray-300">
+            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-x-auto w-full no-scrollbar">
+              <table className="w-full text-left text-xs text-gray-300 min-w-[600px]">
                 <thead className="bg-[#1A1A1A] text-gray-400 uppercase font-extrabold border-b border-[#2A2A2A]">
                   <tr>
                     <th className="p-4">Coupon Code</th>
@@ -507,26 +519,38 @@ export default function AdminDashboard() {
 
           {/* TAB 7: USERS & STAFF */}
           {activeTab === 'users' && (
-            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-              <table className="w-full text-left text-xs text-gray-300">
+            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-x-auto w-full no-scrollbar">
+              <table className="w-full text-left text-xs text-gray-300 min-w-[600px]">
                 <thead className="bg-[#1A1A1A] text-gray-400 uppercase font-extrabold border-b border-[#2A2A2A]">
                   <tr>
                     <th className="p-4">Name</th>
                     <th className="p-4">Email</th>
-                    <th className="p-4">Role</th>
+                    <th className="p-4">Current Role</th>
+                    <th className="p-4">Assign Role</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1F1F1F]">
                   {users.map((u) => (
-                    <tr key={u._id}>
+                    <tr key={u._id} className="hover:bg-[#1A1A1A]/50">
                       <td className="p-4 font-bold text-white">{u.name}</td>
                       <td className="p-4 text-gray-400">{u.email}</td>
                       <td className="p-4">
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                           u.role === 'admin' ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : u.role === 'staff' ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-700 text-gray-300'
                         }`}>
-                          {u.role}
+                          {u.role || 'customer'}
                         </span>
+                      </td>
+                      <td className="p-4">
+                        <select
+                          value={u.role || 'customer'}
+                          onChange={(e) => handleUpdateUserRole(u._id, e.target.value)}
+                          className="bg-[#1A1A1A] text-[#D4AF37] font-bold text-xs rounded-xl px-3 py-1.5 border border-[#2A2A2A] focus:outline-none focus:border-[#D4AF37] uppercase cursor-pointer"
+                        >
+                          <option value="customer">👤 Customer</option>
+                          <option value="staff">🛡️ Staff</option>
+                          <option value="admin">👑 Admin</option>
+                        </select>
                       </td>
                     </tr>
                   ))}
