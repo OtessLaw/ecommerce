@@ -43,7 +43,7 @@ export default function SocialProofToast() {
   if (!visible || !currentNotification) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 z-40 max-w-xs sm:max-w-sm bg-[#141414]/95 backdrop-blur-md border border-[#D4AF37]/30 rounded-2xl p-3.5 shadow-2xl flex items-center space-x-3.5 animate-fadeIn">
+    <div className="fixed bottom-24 left-4 right-4 sm:right-auto sm:bottom-6 sm:left-6 z-30 max-w-xs sm:max-w-sm bg-[#141414]/95 backdrop-blur-md border border-[#D4AF37]/30 rounded-2xl p-3.5 shadow-2xl flex items-center space-x-3.5 animate-fadeIn">
       <img
         src={currentNotification.image}
         alt={currentNotification.item}
