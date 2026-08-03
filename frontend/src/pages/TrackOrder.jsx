@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiClock, FiMapPin, FiPhone, FiAlertCircle } from 'react-icons/fi';
+import { useCurrency } from '../context/CurrencyContext';
 import API from '../services/api';
 
 export default function TrackOrder() {
+  const { formatPrice } = useCurrency();
   const [searchParams] = useSearchParams();
   const initialInvoice = searchParams.get('invoice') || searchParams.get('orderId') || '';
 
@@ -228,7 +230,7 @@ export default function TrackOrder() {
                   <span className="font-mono text-white">{order.shippingAddress?.phone}</span>
                 </div>
                 <p>Payment Method: <strong className="text-white uppercase">{order.paymentMethod}</strong></p>
-                <p>Total Paid: <strong className="text-[#D4AF37]">GH₵ {order.totalPrice?.toLocaleString()}</strong></p>
+                <p>Total Paid: <strong className="text-[#D4AF37]">{formatPrice(order.totalPrice)}</strong></p>
               </div>
             </div>
           </div>
@@ -246,7 +248,7 @@ export default function TrackOrder() {
                       <p className="text-[10px] text-gray-400">Qty: {it.quantity} | Size: {it.selectedSize}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-[#D4AF37]">GH₵ {(it.price * it.quantity).toLocaleString()}</span>
+                  <span className="font-bold text-[#D4AF37]">{formatPrice(it.price * it.quantity)}</span>
                 </div>
               ))}
             </div>

@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { FiHeart, FiShoppingBag, FiStar } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
 
   const isLiked = isInWishlist(product._id);
   const displayPrice = product.salePrice > 0 ? product.salePrice : product.price;
@@ -77,9 +79,9 @@ export default function ProductCard({ product }) {
 
         {/* Price Tag */}
         <div className="flex items-baseline space-x-2 pt-1">
-          <span className="text-base font-extrabold text-white">GH₵ {displayPrice.toLocaleString()}</span>
+          <span className="text-base font-extrabold text-white">{formatPrice(displayPrice)}</span>
           {product.salePrice > 0 && product.price > product.salePrice && (
-            <span className="text-xs text-gray-500 line-through">GH₵ {product.price.toLocaleString()}</span>
+            <span className="text-xs text-gray-500 line-through">{formatPrice(product.price)}</span>
           )}
         </div>
       </div>

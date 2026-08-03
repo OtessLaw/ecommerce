@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiX, FiTrash2, FiPlus, FiMinus, FiShoppingBag, FiTag } from 'react-icons/fi';
 import { useCart } from '../../context/CartContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 export default function CartDrawer() {
+  const { formatPrice } = useCurrency();
   const {
     cartItems,
     isCartOpen,
@@ -118,7 +120,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <span className="text-xs font-extrabold text-[#D4AF37]">
-                        GH₵ {(item.price * item.quantity).toLocaleString()}
+                        {formatPrice(item.price * item.quantity)}
                       </span>
                     </div>
                   </div>
@@ -158,27 +160,27 @@ export default function CartDrawer() {
               <div className="space-y-1 text-xs text-gray-400 border-t border-[#1F1F1F] pt-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="text-white font-medium">GH₵ {itemsPrice.toLocaleString()}</span>
+                  <span className="text-white font-medium">{formatPrice(itemsPrice)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-[#D4AF37]">
                     <span>Discount</span>
-                    <span>-GH₵ {discountAmount.toLocaleString()}</span>
+                    <span>-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>VAT (5%)</span>
-                  <span className="text-white font-medium">GH₵ {vatAmount.toLocaleString()}</span>
+                  <span className="text-white font-medium">{formatPrice(vatAmount)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Estimated Shipping</span>
                   <span className="text-white font-medium">
-                    {shippingPrice === 0 ? <span className="text-[#D4AF37] font-bold">FREE</span> : `GH₵ ${shippingPrice.toLocaleString()}`}
+                    {shippingPrice === 0 ? <span className="text-[#D4AF37] font-bold">FREE</span> : formatPrice(shippingPrice)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-white pt-2 border-t border-[#2A2A2A]">
                   <span>Total</span>
-                  <span className="text-[#D4AF37]">GH₵ {totalPrice.toLocaleString()}</span>
+                  <span className="text-[#D4AF37]">{formatPrice(totalPrice)}</span>
                 </div>
               </div>
 

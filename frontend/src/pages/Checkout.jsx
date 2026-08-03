@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useCurrency } from '../context/CurrencyContext';
 import API from '../services/api';
 import toast from 'react-hot-toast';
 import { FiLock, FiCreditCard, FiTruck } from 'react-icons/fi';
 
 export default function Checkout() {
+  const { formatPrice } = useCurrency();
   const { cartItems, itemsPrice, discountAmount, vatAmount, shippingPrice, totalPrice, clearCart, coupon } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -269,7 +271,7 @@ export default function Checkout() {
                   <p className="font-semibold text-white truncate">{item.title}</p>
                   <p className="text-[10px] text-gray-400">Qty: {item.quantity} | {item.selectedSize}</p>
                 </div>
-                <span className="font-bold text-[#D4AF37]">GH₵ {(item.price * item.quantity).toLocaleString()}</span>
+                <span className="font-bold text-[#D4AF37]">{formatPrice(item.price * item.quantity)}</span>
               </div>
             ))}
           </div>
@@ -277,25 +279,25 @@ export default function Checkout() {
           <div className="space-y-2 border-t border-[#2A2A2A] pt-4 text-xs text-gray-400">
             <div className="flex justify-between">
               <span>Items Subtotal</span>
-              <span className="text-white">GH₵ {itemsPrice.toLocaleString()}</span>
+              <span className="text-white">{formatPrice(itemsPrice)}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-[#D4AF37]">
                 <span>Coupon Discount</span>
-                <span>-GH₵ {discountAmount.toLocaleString()}</span>
+                <span>-{formatPrice(discountAmount)}</span>
               </div>
             )}
             <div className="flex justify-between">
               <span>VAT (5%)</span>
-              <span className="text-white">GH₵ {vatAmount.toLocaleString()}</span>
+              <span className="text-white">{formatPrice(vatAmount)}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping Fee</span>
-              <span className="text-white">{shippingPrice === 0 ? 'FREE' : `GH₵ ${shippingPrice.toLocaleString()}`}</span>
+              <span className="text-white">{shippingPrice === 0 ? 'FREE' : formatPrice(shippingPrice)}</span>
             </div>
             <div className="flex justify-between text-base font-extrabold text-white pt-2 border-t border-[#2A2A2A]">
               <span>Grand Total</span>
-              <span className="text-[#D4AF37]">GH₵ {totalPrice.toLocaleString()}</span>
+              <span className="text-[#D4AF37]">{formatPrice(totalPrice)}</span>
             </div>
           </div>
 
@@ -305,7 +307,7 @@ export default function Checkout() {
             className="w-full gold-btn py-4 rounded-xl text-xs font-extrabold uppercase tracking-widest flex items-center justify-center space-x-2"
           >
             <FiLock size={16} />
-            <span>{loading ? 'PROCESSING...' : `PAY GH₵ ${totalPrice.toLocaleString()} VIA PAYSTACK`}</span>
+            <span>{loading ? 'PROCESSING...' : `CONFIRM ORDER (${formatPrice(totalPrice)})`}</span>
           </button>
         </div>
       </form>

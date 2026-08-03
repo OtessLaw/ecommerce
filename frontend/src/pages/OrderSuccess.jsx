@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { FiCheckCircle, FiPackage, FiPrinter, FiMessageSquare } from 'react-icons/fi';
+import { useCurrency } from '../context/CurrencyContext';
 import API from '../services/api';
 
 export default function OrderSuccess() {
+  const { formatPrice } = useCurrency();
   const [searchParams] = useSearchParams();
   const reference = searchParams.get('reference');
   const orderId = searchParams.get('orderId');
@@ -80,7 +82,7 @@ export default function OrderSuccess() {
             </div>
             <div className="flex justify-between pt-2 border-t border-[#2A2A2A] font-bold text-white">
               <span>Total Amount:</span>
-              <span className="text-[#D4AF37]">GH₵ {order.totalPrice?.toLocaleString()}</span>
+              <span className="text-[#D4AF37]">{formatPrice(order.totalPrice)}</span>
             </div>
           </div>
         )}
