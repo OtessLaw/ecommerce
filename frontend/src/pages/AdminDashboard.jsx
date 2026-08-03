@@ -16,6 +16,7 @@ import {
   FiFolder as FiCatFolder,
   FiImage as FiBannerImg,
   FiSettings as FiStoreSet,
+  FiPrinter,
 } from 'react-icons/fi';
 
 export default function AdminDashboard() {
