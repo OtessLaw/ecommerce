@@ -64,10 +64,24 @@ export default function StylistWidget() {
   const generateChatGPTResponse = (userMsg) => {
     const lower = userMsg.toLowerCase();
 
-    // 1. Human Greetings
-    if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey') || lower.includes('who are you') || lower.includes('good morning') || lower.includes('good evening')) {
+    // 1. Casual Chat & Greetings
+    if (lower.match(/\b(how are (you|u)|how u doin|how are u doing|how is it going)\b/)) {
       return {
-        text: "Hello! It is a pleasure to meet you. I am your personal J&J Vintage fashion AI. How can I help you elevate your wardrobe today?",
+        text: "I'm doing wonderfully, thank you for asking! 😊 I'm here and ready to assist you with anything you need. How are you doing today?",
+        recommendations: [],
+      };
+    }
+
+    if (lower.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you)\b/)) {
+      return {
+        text: "Hello! 👋 It is a pleasure to meet you. I am your personal J&J Vintage AI Stylist. How can I help you today?",
+        recommendations: [],
+      };
+    }
+
+    if (lower.match(/\b(thank|thanks|thank u|thankyou|awesome|great|good)\b/)) {
+      return {
+        text: "You are most welcome! 😊 Is there anything else I can assist you with today?",
         recommendations: [],
       };
     }
@@ -83,7 +97,7 @@ export default function StylistWidget() {
     // 3. Shipping / Delivery / Payment
     if (lower.includes('shipping') || lower.includes('delivery') || lower.includes('pay') || lower.includes('paystack') || lower.includes('momo') || lower.includes('mobile money')) {
       return {
-        text: "We offer express tracked delivery across all cities in Ghana! We accept Mobile Money (MTN, Vodafone/Telecel, AT) and Bank Cards via Paystack, as well as Cash on Delivery.",
+        text: "We offer express tracked delivery across all cities in Ghana! We accept Mobile Money (MTN, Telecel/Vodafone, AT) and Bank Cards via Paystack, as well as Cash on Delivery.",
         recommendations: [],
       };
     }
@@ -96,6 +110,8 @@ export default function StylistWidget() {
     }
 
     // 5. Product Catalog Match
+    let isShoppingQuery = lower.match(/\b(buy|shop|outfit|recommend|wear|price|cost|item|jacket|shoe|dress|sneaker|gown|coat|watch|bag|shirt|pants|men|women|kids?)\b/);
+
     let matches = storeProducts.filter((p) => {
       const title = (p.title || '').toLowerCase();
       const cat = (p.category || '').toLowerCase();
@@ -116,27 +132,29 @@ export default function StylistWidget() {
       return title.includes(lower) || cat.includes(lower);
     });
 
-    if (matches.length === 0) {
-      matches = storeProducts.slice(0, 2);
-    }
+    let text = "I am here to help! Feel free to ask me anything about our collections, outfit styling, sizing, or general questions.";
+    let recs = [];
 
-    let text = "Based on what you love, here are my top recommended haute couture pieces from J&J Vintage:";
-    if (maxBudget !== null) {
-      text = `Here are our best luxury pieces for your budget under GH₵ ${maxBudget}:`;
-    } else if (lower.includes('gala') || lower.includes('wedding') || lower.includes('party')) {
-      text = "For an elegant evening out, here is the stunning outfit combination I recommend to make a great statement:";
-    } else if (lower.includes('street') || lower.includes('casual')) {
-      text = "For elevated vintage streetwear, here is the look I've put together for you:";
-    }
-
-    return {
-      text,
-      recommendations: matches.slice(0, 3).map((p) => ({
+    if (isShoppingQuery || maxBudget !== null) {
+      recs = (matches.length > 0 ? matches : storeProducts).slice(0, 3).map((p) => ({
         title: p.title,
         price: `GH₵ ${p.salePrice > 0 ? p.salePrice : p.price}`,
         link: `/product/${p._id}`,
         image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : (p.images || p.image),
-      })),
+      }));
+
+      if (maxBudget !== null) {
+        text = `Here are our best luxury pieces for your budget under GH₵ ${maxBudget}:`;
+      } else if (lower.includes('gala') || lower.includes('wedding') || lower.includes('party')) {
+        text = "For an elegant evening out, here is the stunning outfit combination I recommend:";
+      } else {
+        text = "Here are the top curated pieces from our J&J Vintage collection matching your style request:";
+      }
+    }
+
+    return {
+      text,
+      recommendations: recs,
     };
   };
 
