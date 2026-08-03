@@ -39,9 +39,11 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#0B0B0B]/90 backdrop-blur-md border-b border-[#2A2A2A]">
-      {/* Top Banner Notice */}
-      <div className="bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#9E7B3B] text-black text-xs font-bold text-center py-1.5 px-4 tracking-wider">
-        🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.
+      {/* Top Banner Notice (Animated Marquee) */}
+      <div className="bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#9E7B3B] text-black text-xs font-extrabold py-1.5 px-4 overflow-hidden whitespace-nowrap shadow-md">
+        <div className="animate-marquee tracking-wider font-extrabold uppercase">
+          🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence. &nbsp;&nbsp; • &nbsp;&nbsp; 🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
