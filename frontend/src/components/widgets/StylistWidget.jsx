@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiMessageSquare, FiX, FiSend, FiCompass, FiCheckCircle } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +13,17 @@ export default function StylistWidget() {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const quickPrompts = [
     '✨ Style me for an Evening Gala',
@@ -103,7 +114,7 @@ export default function StylistWidget() {
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-[#0B0B0B]/50">
+          <div className="flex-1 p-4 overflow-y-auto overscroll-contain space-y-3 text-xs bg-[#0B0B0B]/50" style={{ touchAction: 'pan-y' }}>
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
@@ -173,7 +184,7 @@ export default function StylistWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask your stylist anything..."
-              className="flex-1 bg-[#1A1A1A] text-white text-xs rounded-xl px-3 py-2.5 border border-[#2A2A2A] focus:border-[#D4AF37] outline-none"
+              className="flex-1 bg-[#1A1A1A] text-white text-base sm:text-xs rounded-xl px-3 py-2.5 border border-[#2A2A2A] focus:border-[#D4AF37] outline-none"
             />
             <button type="submit" className="gold-btn p-2.5 rounded-xl text-black">
               <FiSend size={16} />
