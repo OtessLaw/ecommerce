@@ -2,35 +2,6 @@ const axios = require('axios');
 const Product = require('../models/Product');
 const { initialProducts } = require('../utils/seedData');
 
-// Local Fallback Matcher
-function generateLocalFallback(userQuery, products) {
-  const lower = userQuery.toLowerCase();
-
-  if (lower.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you)\b/)) {
-    return "Hello darling! 👋 I am your J&J Vintage AI Fashion Stylist. I am here to help you select the perfect luxury outfit, find your exact size, or answer any questions about our collection. What occasion are you shopping for today?";
-  } 
-  if (lower.includes('size') || lower.includes('fit') || lower.includes('measurement')) {
-    return "Our J&J Vintage garments feature handcrafted European cuts. For a tailored fit, select your true size. If you prefer a relaxed vintage drape, we recommend ordering one size up! You can also use our interactive 'FIND MY EXACT SIZE' calculator on any product page.";
-  } 
-  if (lower.match(/\b(ship|shipping|deliver|delivery|pay|payment|paystack|momo|mobile money|cedi|cedis|ghc)\b/)) {
-    return "We offer express tracked delivery across all cities in Ghana! We accept Mobile Money (MTN, Telecel/Vodafone, AT) and Bank Cards securely via Paystack, as well as Cash on Delivery.";
-  }
-
-  let maxBudget = null;
-  const budgetMatch = lower.match(/(?:under|below|budget|less than|cedis?|ghc?)\s*(\d+)/i);
-  if (budgetMatch) {
-    maxBudget = Number(budgetMatch[1]);
-  }
-
-  if (maxBudget !== null) {
-    return `Here are our finest luxury pieces from J&J Vintage matching your budget of GH₵ ${maxBudget}:`;
-  } else if (lower.includes('wedding') || lower.includes('gala') || lower.includes('party') || lower.includes('dinner')) {
-    return `For an event like that, you want to make an unforgettable entrance! Here is the curated outfit combination I recommend:`;
-  }
-
-  return "I've selected these magnificent luxury pieces from our J&J Vintage collection just for you:";
-}
-
 // Product Extractor for UI Cards
 function extractMatchingProducts(userQuery, products) {
   const lower = userQuery.toLowerCase();
@@ -61,8 +32,8 @@ function extractMatchingProducts(userQuery, products) {
     return title.includes(lower) || cat.includes(lower);
   });
 
-  if (matches.length === 0) {
-    matches = products.slice(0, 3);
+  if (matches.length === 0 && (lower.includes('buy') || lower.includes('shop') || lower.includes('outfit') || lower.includes('recommend') || lower.includes('wear') || lower.includes('price'))) {
+    matches = products.slice(0, 2);
   }
 
   return matches.slice(0, 3);
@@ -100,79 +71,45 @@ const chatWithAIAgent = async (req, res) => {
       )
       .join('\n');
 
-    const systemPrompt = `You are the AI Personal Fashion Stylist & Concierge for J&J Vintage, an ultra-luxury fashion house based in Ghana.
-You assist clients warmly, eloquently, and knowledgeably with outfit recommendations, styling for events, sizing advice, and store inquiries.
+    const systemPrompt = `You are the AI Personal Assistant and Luxury Fashion Stylist for J&J Vintage (a high-fashion vintage couture brand in Ghana).
+You possess general intelligence like ChatGPT and Gemini. You can converse warmly, naturally, and knowledgeably about ANY topic the user asks (general questions, chit-chat, fashion trends, sizing, styling advice, event outfit ideas, gift ideas, store policies, or general knowledge).
 
-Business Knowledge:
+Store Knowledge:
 - Store Name: J&J Vintage
 - Currency: Ghanaian Cedis (GH₵ / GHS)
-- Payment Gateways: Mobile Money (MTN, Telecel/Vodafone, AT), Bank Cards via Paystack, Cash on Delivery
-- Shipping: Express tracked delivery across all cities in Ghana (Accra, Kumasi, Takoradi, etc.)
+- Payment: Mobile Money (MTN, Telecel/Vodafone, AT), Paystack Cards, Cash on Delivery
+- Shipping: Fast tracked delivery across all cities in Ghana (Accra, Kumasi, Takoradi, etc.)
 - Sizing: European luxury cuts. True to size for tailored look, 1 size up for oversized vintage look.
 
-Current Live Catalog Highlights:
+Current Catalog Highlights:
 ${catalogSummary}
 
-Guidelines:
-- Keep answers concise, elegant, warm, and helpful (under 3 paragraphs).
-- If recommending products, mention their exact names and Cedis prices.
-- Never mention internal technical details or fallback engines.`;
+Formatting Guidelines:
+- Answer naturally, conversationally, and insightfully (like ChatGPT/Gemini).
+- If the user asks a fashion/shopping/styling question, naturally mention relevant J&J Vintage products and their prices in Cedis.
+- If the user asks a general question (e.g. greetings, jokes, general advice), answer warmly and converse like a helpful human assistant.`;
 
     let aiReplyText = null;
     let engineUsed = null;
 
-    // ==========================================
-    // ⚡ ENGINE 1: Google Gemini AI (Primary)
-    // ==========================================
-    if (process.env.GEMINI_API_KEY) {
-      try {
-        console.log('[AI Pipeline] Calling Primary Engine: Google Gemini AI...');
-        const geminiRes = await axios.post(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-          {
-            contents: [
-              {
-                role: 'user',
-                parts: [{ text: `${systemPrompt}\n\nUser Question: ${userMessage}` }],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 500,
-            },
-          },
-          {
-            headers: {
-              'x-goog-api-key': process.env.GEMINI_API_KEY,
-              'Content-Type': 'application/json',
-            },
-            timeout: 8000,
-          }
-        );
-
-        const geminiText = geminiRes.data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (geminiText) {
-          aiReplyText = geminiText;
-          engineUsed = 'Google Gemini AI';
-          console.log('[AI Pipeline] Engine Success: Google Gemini AI');
-        }
-      } catch (err) {
-        console.warn('[AI Pipeline] Gemini AI failed/timed out. Failing over to Groq Llama 3...', err.response?.data || err.message);
-      }
-    }
+    const groqKey = process.env.GROQ_API_KEY;
 
     // ==========================================
-    // 🦙 ENGINE 2: Groq Llama 3 (Secondary Fallback)
+    // 🦙 ENGINE 1: Groq Llama 3.3 70B (Primary Ultra-Fast)
     // ==========================================
-    if (!aiReplyText && process.env.GROQ_API_KEY) {
+    if (groqKey) {
       try {
-        console.log('[AI Pipeline] Calling Secondary Engine: Groq Llama 3...');
+        console.log('[AI Pipeline] Calling Primary LLM Engine: Groq Llama 3.3 70B...');
         const groqRes = await axios.post(
           'https://api.groq.com/openai/v1/chat/completions',
           {
             model: 'llama-3.3-70b-versatile',
             messages: [
               { role: 'system', content: systemPrompt },
+              ...(history || []).slice(-4).map((h) => ({
+                role: h.role === 'user' ? 'user' : 'assistant',
+                content: h.content,
+              })),
               { role: 'user', content: userMessage },
             ],
             temperature: 0.7,
@@ -180,10 +117,10 @@ Guidelines:
           },
           {
             headers: {
-              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+              Authorization: `Bearer ${groqKey}`,
               'Content-Type': 'application/json',
             },
-            timeout: 8000,
+            timeout: 10000,
           }
         );
 
@@ -191,21 +128,21 @@ Guidelines:
         if (groqText) {
           aiReplyText = groqText;
           engineUsed = 'Groq Llama 3.3 70B';
-          console.log('[AI Pipeline] Engine Success: Groq Llama 3');
+          console.log('[AI Pipeline] Engine Success: Groq Llama 3.3 70B');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] Groq Llama 3 failed/timed out. Failing over to OpenAI GPT...', err.response?.data || err.message);
+        console.warn('[AI Pipeline] Groq Llama 3 failed/timed out.', err.response?.data || err.message);
       }
     }
 
     // ==========================================
-    // 🤖 ENGINE 3: OpenAI GPT-3.5 (Tertiary Fallback)
+    // 🤖 ENGINE 2: OpenAI GPT (Fallback 1)
     // ==========================================
     if (!aiReplyText && process.env.OPENAI_API_KEY) {
       try {
-        console.log('[AI Pipeline] Calling Tertiary Engine: OpenAI GPT...');
+        console.log('[AI Pipeline] Calling Secondary LLM Engine: OpenAI GPT...');
         const openaiRes = await axios.post(
-          'https://api.openai.com/v1/chat/completions',
+          'https://api.openai.com/v1,chat/completions',
           {
             model: 'gpt-3.5-turbo',
             messages: [
@@ -231,16 +168,14 @@ Guidelines:
           console.log('[AI Pipeline] Engine Success: OpenAI GPT');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] OpenAI GPT failed/timed out. Falling over to Local Rule Engine...', err.message);
+        console.warn('[AI Pipeline] OpenAI GPT failed/timed out.', err.response?.data || err.message);
       }
     }
 
-    // ==========================================
-    // 🏢 ENGINE 4: Local Rule Engine (Quaternary Fallback)
-    // ==========================================
+    // Fallback if network offline
     if (!aiReplyText) {
-      engineUsed = 'J&J Local Rule Engine';
-      aiReplyText = generateLocalFallback(userMessage, products);
+      engineUsed = 'J&J Local Engine';
+      aiReplyText = "Hello! I am your J&J Vintage assistant. How can I help you choose the perfect luxury item today?";
     }
 
     const matchingProducts = extractMatchingProducts(userMessage, products);
@@ -256,7 +191,6 @@ Guidelines:
         image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : (p.images || p.image),
       })),
     });
-
   } catch (error) {
     console.error('AI Pipeline Error:', error);
     res.status(500).json({ message: 'AI Agent error' });
