@@ -687,8 +687,40 @@ export default function AdminDashboard() {
             </div>
             <form onSubmit={handleCreateProduct} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Title</label>
-                <input type="text" value={newProd.title} onChange={(e) => setNewProd({ ...newProd, title: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
+                <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Product Title</label>
+                <input type="text" placeholder="e.g. Vintage Leather Biker Jacket" value={newProd.title} onChange={(e) => setNewProd({ ...newProd, title: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Department Category</label>
+                  <select
+                    value={newProd.parentCategory}
+                    onChange={(e) => setNewProd({ ...newProd, parentCategory: e.target.value, category: e.target.value })}
+                    required
+                    className="w-full bg-[#1A1A1A] text-[#D4AF37] text-xs font-bold rounded-xl p-2.5 border border-[#2A2A2A] focus:border-[#D4AF37]"
+                  >
+                    <option value="Men">👔 Men</option>
+                    <option value="Women">👗 Women</option>
+                    <option value="Kids">🧒 Kids</option>
+                    <option value="Shoes">👠 Shoes</option>
+                    <option value="Sneakers">👟 Sneakers</option>
+                    <option value="Bags">👜 Bags</option>
+                    <option value="Accessories">🕶️ Accessories</option>
+                    <option value="Jewelry">💎 Jewelry</option>
+                    <option value="Beauty">💄 Beauty</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Sub-Category / Type</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Outerwear, Dresses, Watches"
+                    value={newProd.category}
+                    onChange={(e) => setNewProd({ ...newProd, category: e.target.value })}
+                    required
+                    className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]"
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -696,7 +728,7 @@ export default function AdminDashboard() {
                   <input type="number" value={newProd.price} onChange={(e) => setNewProd({ ...newProd, price: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Stock</label>
+                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Stock Quantity</label>
                   <input type="number" value={newProd.stock} onChange={(e) => setNewProd({ ...newProd, stock: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
                 </div>
               </div>
