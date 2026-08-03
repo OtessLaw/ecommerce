@@ -76,8 +76,8 @@ function extractMatchingProducts(userQuery, products) {
   }
 
   let matches = products.filter((p) => {
-    const title = (p.title || '').toLowerCase();
-    const cat = (p.category || '').toLowerCase();
+    const title = (p.title || p.name || '').toLowerCase();
+    const cat = (typeof p.category === 'string' ? p.category : '').toLowerCase();
     const pCat = (p.parentCategory || '').toLowerCase();
     const price = p.salePrice > 0 ? p.salePrice : p.price;
 
@@ -128,10 +128,20 @@ const chatWithAIAgent = async (req, res) => {
 
     const catalogSummary = products
       .slice(0, 10)
-      .map(
-        (p) =>
-          `- ${p.title} (Category: ${p.category}, Price: GH₵ ${p.salePrice > 0 ? p.salePrice : p.price})`
-      )
+      .map((p) => {
+        const title = p.title || p.name || 'J&J Vintage Couture Item';
+        let category = 'Luxury Fashion';
+        if (typeof p.category === 'string' && !p.category.match(/^[0-9a-fA-F]{24}$/)) {
+          category = p.category;
+        } else if (p.parentCategory) {
+          category = p.parentCategory;
+        } else if (p.category && typeof p.category === 'object' && p.category.name) {
+          category = p.category.name;
+        }
+        const price = p.salePrice > 0 ? p.salePrice : p.price;
+        return `- ${title} (Category: ${category}, Price: GH₵ ${price})`;
+      })
+      .filter((line) => !line.includes('undefined'))
       .join('\n');
 
     const systemPrompt = `You are the AI Personal Stylist & Concierge for J&J Vintage (a luxury vintage fashion house in Ghana).
@@ -150,7 +160,7 @@ Tone & Style Guidelines:
 1. CALM, ATTENTIVE & WELCOMING: Speak with calm, patient elegance, like a dedicated personal shopper in a high-end luxury atelier. Never rush or sound abrupt. Take time to make the client feel valued and cared for.
 2. NATURAL CONVERSATION: Avoid robotic repetitive lines (like "I am glad to help" or "As an AI"). Speak naturally and fluidly as a human stylist.
 3. BALANCED LENGTH: Keep answers well-structured, warm, and easy to read (1-2 smooth, thoughtful paragraphs).
-4. LUXURY PRODUCT RECOMMENDATIONS: When recommending products, describe them thoughtfully with their exact names and Cedis prices.`;
+4. STRICT FORMATTING & HUMAN PRODUCT NAMES: NEVER output raw database ObjectIds, hexadecimal strings (like 6a6c2f0e...), or the word "undefined". Always use human product titles (e.g. "J&J Vintage Leather Biker Jacket") and clear category names (e.g. "Outerwear", "Footwear", "Dresses").`;
 
     let aiReplyText = null;
     let engineUsed = null;
@@ -243,10 +253,10 @@ Tone & Style Guidelines:
       engine: engineUsed,
       recommendations: matchingProducts.map((p) => ({
         _id: p._id,
-        title: p.title,
+        title: p.title || p.name || 'J&J Luxury Item',
         price: `GH₵ ${p.salePrice > 0 ? p.salePrice : p.price}`,
         link: `/product/${p._id}`,
-        image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : (p.images || p.image),
+        image: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : (p.images || p.image || 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1000&q=80'),
       })),
     });
   } catch (error) {
