@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { FiSearch, FiShoppingBag, FiHeart, FiUser, FiMenu, FiX, FiShield, FiLogOut } from 'react-icons/fi';
+import { FiSearch, FiShoppingBag, FiHeart, FiUser, FiMenu, FiX, FiShield, FiLogOut, FiTruck } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -77,6 +77,14 @@ export default function Navbar() {
               className="text-[#D4AF37] font-bold uppercase tracking-widest text-xs animate-pulse"
             >
               SALE 🔥
+            </RouterLink>
+
+            <RouterLink
+              to="/track-order"
+              className="text-xs font-extrabold text-[#D4AF37] hover:underline transition uppercase tracking-widest flex items-center space-x-1 border-l border-[#2A2A2A] pl-4"
+            >
+              <FiTruck size={14} />
+              <span>TRACK ORDER</span>
             </RouterLink>
           </nav>
 

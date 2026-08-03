@@ -80,9 +80,9 @@ export default function Footer() {
         <div>
           <h5 className="text-white text-xs font-extrabold uppercase tracking-widest mb-4">Client Care</h5>
           <ul className="space-y-2 text-xs">
-            <li><Link to="/customer/dashboard" className="hover:text-[#D4AF37] transition">Order Status & Tracking</Link></li>
-            <li><Link to="/customer/support" className="hover:text-[#D4AF37] transition">Support Tickets</Link></li>
-            <li><Link to="/shipping-policy" className="hover:text-[#D4AF37] transition">Shipping & Customs</Link></li>
+            <li><Link to="/track-order" className="hover:text-[#D4AF37] transition font-bold text-white">Track Order Status</Link></li>
+            <li><Link to="/customer/dashboard" className="hover:text-[#D4AF37] transition">My Account Dashboard</Link></li>
+            <li><Link to="/shipping-policy" className="hover:text-[#D4AF37] transition">Shipping & Delivery Policy</Link></li>
             <li><Link to="/returns" className="hover:text-[#D4AF37] transition">Returns & Exchanges</Link></li>
             <li><Link to="/privacy" className="hover:text-[#D4AF37] transition">Privacy & Terms</Link></li>
           </ul>
