@@ -39,10 +39,17 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#0B0B0B]/90 backdrop-blur-md border-b border-[#2A2A2A]">
-      {/* Top Banner Notice (Animated Marquee) */}
-      <div className="bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#9E7B3B] text-black text-xs font-extrabold py-1.5 px-4 overflow-hidden whitespace-nowrap shadow-md">
-        <div className="animate-marquee tracking-wider font-extrabold uppercase">
-          🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence. &nbsp;&nbsp; • &nbsp;&nbsp; 🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.
+      {/* Top Banner Notice (Seamless Infinite Ticker) */}
+      <div className="bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#9E7B3B] text-black text-xs font-extrabold py-1.5 overflow-hidden whitespace-nowrap shadow-md">
+        <div className="animate-ticker tracking-wider font-extrabold uppercase text-[11px] items-center">
+          <span className="px-4">🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.</span>
+          <span className="px-2 font-black">•</span>
+          <span className="px-4">🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.</span>
+          <span className="px-2 font-black">•</span>
+          <span className="px-4">🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.</span>
+          <span className="px-2 font-black">•</span>
+          <span className="px-4">🛍️ Discover the latest fashion collections at JNJ Vintage. Shop with confidence.</span>
+          <span className="px-2 font-black">•</span>
         </div>
       </div>
 
