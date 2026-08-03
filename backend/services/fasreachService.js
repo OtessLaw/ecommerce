@@ -49,9 +49,15 @@ class FasreachService {
       const response = await axios.post(
         this.baseURL,
         {
+          recipient: cleanPhone,
           to: cleanPhone,
+          phone: cleanPhone,
           message: message,
+          content: message,
+          text: message,
           sender: finalSender,
+          senderId: finalSender,
+          sender_id: finalSender,
         },
         {
           headers: {
@@ -74,6 +80,7 @@ class FasreachService {
           const retryRes = await axios.post(
             this.baseURL,
             {
+              recipient: cleanPhone,
               to: cleanPhone,
               message: message,
               sender: 'FASREACH',
