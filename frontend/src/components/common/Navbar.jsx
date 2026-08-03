@@ -150,6 +150,14 @@ export default function Navbar() {
                       </div>
                       <div className="py-1">
                         <RouterLink
+                          to="/track-order"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center space-x-2 px-4 py-2 text-xs text-[#D4AF37] font-extrabold hover:bg-[#2A2A2A]"
+                        >
+                          <FiTruck size={14} />
+                          <span>Track Order Status</span>
+                        </RouterLink>
+                        <RouterLink
                           to="/customer/dashboard"
                           onClick={() => setUserDropdownOpen(false)}
                           className="block px-4 py-2 text-xs text-gray-300 hover:bg-[#2A2A2A] hover:text-[#D4AF37]"
@@ -183,6 +191,14 @@ export default function Navbar() {
                   ) : (
                     <div className="p-3 space-y-2">
                       <RouterLink
+                        to="/track-order"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center justify-center space-x-2 py-2 px-4 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-bold text-xs hover:bg-[#D4AF37]/30 transition"
+                      >
+                        <FiTruck size={14} />
+                        <span>Track Order Status</span>
+                      </RouterLink>
+                      <RouterLink
                         to="/login"
                         onClick={() => setUserDropdownOpen(false)}
                         className="block text-center py-2 px-4 rounded-lg bg-[#D4AF37] text-black font-bold text-xs hover:bg-[#FFF0B9] transition"
@@ -207,8 +223,17 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#141414] border-t border-[#2A2A2A] px-4 pt-4 pb-6 space-y-3">
-          <form onSubmit={handleSearchSubmit} className="relative mb-4">
+        <div className="lg:hidden bg-[#141414] border-t border-[#2A2A2A] px-4 pt-4 pb-6 space-y-4">
+          <RouterLink
+            to="/track-order"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-[#D4AF37] text-black font-extrabold text-xs uppercase tracking-wider shadow-gold"
+          >
+            <FiTruck size={16} />
+            <span>TRACK ORDER LOGISTICS</span>
+          </RouterLink>
+
+          <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
               placeholder="Search products..."
