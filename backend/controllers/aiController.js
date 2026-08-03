@@ -2,7 +2,64 @@ const axios = require('axios');
 const Product = require('../models/Product');
 const { initialProducts } = require('../utils/seedData');
 
-// Product Extractor for UI Cards
+// Comprehensive Conversational Fallback Engine
+function generateLocalFallback(userQuery, products) {
+  const lower = userQuery.toLowerCase().trim();
+
+  // 1. How are you / Status questions
+  if (lower.match(/\b(how are (you|u)|how u doin|how are u doing|how is it going|how do you do|how have you been)\b/)) {
+    return "I'm doing wonderfully, thank you for asking! 😊 I'm here and ready to assist you with styling, outfit ideas, sizing, or any questions you have. How are you doing today?";
+  }
+
+  // 2. Greetings & Who are you
+  if (lower.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you|what is your name)\b/)) {
+    return "Hello! 👋 I am your J&J Vintage AI Fashion Concierge. It's a pleasure to connect with you. What can I help you discover or style today?";
+  }
+
+  // 3. Gratitude & Compliments
+  if (lower.match(/\b(thank|thanks|thank u|thankyou|awesome|great|good|nice|perfect|cool)\b/)) {
+    return "You're most welcome! 😊 I'm always here if you need styling advice, outfit recommendations, or help with your order. Enjoy exploring J&J Vintage!";
+  }
+
+  // 4. Identity & Creator questions
+  if (lower.match(/\b(who (made|created|built) you|are you (real|human|ai|bot)|what are you)\b/)) {
+    return "I am an AI Personal Fashion Stylist created for J&J Vintage! I'm trained to help you explore luxury fashion, find matching outfits, calculate your exact fit, and answer any shopping questions.";
+  }
+
+  // 5. Entertainment & Jokes
+  if (lower.match(/\b(joke|funny|laugh|story|tell me something)\b/)) {
+    return "Here's a fashion joke for you: Why did the designer handbag go to therapy? Because it was feeling a little 'worn out' from carrying everyone's high expectations! 😄 Is there a specific style or outfit you'd like to check out today?";
+  }
+
+  // 6. Shopping & Budget Matching
+  let maxBudget = null;
+  const budgetMatch = lower.match(/(?:under|below|budget|less than|cedis?|ghc?)\s*(\d+)/i);
+  if (budgetMatch) {
+    maxBudget = Number(budgetMatch[1]);
+  }
+
+  if (maxBudget !== null) {
+    return `Here are our top luxury pieces from J&J Vintage matching your budget of GH₵ ${maxBudget}:`;
+  }
+
+  // 7. Size advice
+  if (lower.includes('size') || lower.includes('fit') || lower.includes('measurement')) {
+    return "Our J&J Vintage garments feature handcrafted European cuts. For a classic tailored fit, select your standard size. For an oversized, relaxed vintage drape, we recommend ordering one size up! You can also click 'FIND MY EXACT SIZE' on any product page for a custom calculation.";
+  } 
+
+  // 8. Shipping / Delivery / Payment / Ghana details
+  if (lower.match(/\b(ship|shipping|deliver|delivery|pay|payment|paystack|momo|mobile money)\b/)) {
+    return "We offer express tracked delivery across all cities in Ghana! We accept Mobile Money (MTN, Telecel/Vodafone, AT) and Bank Cards via Paystack, as well as Cash on Delivery.";
+  }
+  
+  if (lower.includes('wedding') || lower.includes('gala') || lower.includes('party') || lower.includes('dinner')) {
+    return "For a special occasion like that, you want to make an unforgettable entrance! Here are our finest recommended pieces for your look:";
+  }
+
+  return "I am your J&J Vintage AI Assistant! I can help you with styling, outfit combinations, sizing, shipping, or answering any questions you have. What would you like to explore?";
+}
+
+// Product Extractor for UI Cards (Only attached when shopping/products are requested)
 function extractMatchingProducts(userQuery, products) {
   const lower = userQuery.toLowerCase();
 
@@ -10,6 +67,12 @@ function extractMatchingProducts(userQuery, products) {
   const budgetMatch = lower.match(/(?:under|below|budget|less than|cedis?|ghc?)\s*(\d+)/i);
   if (budgetMatch) {
     maxBudget = Number(budgetMatch[1]);
+  }
+
+  let isShoppingQuery = lower.match(/\b(buy|shop|outfit|recommend|wear|price|cost|item|jacket|shoe|dress|sneaker|gown|coat|watch|bag|shirt|pants|men|women|kids?)\b/);
+
+  if (!isShoppingQuery && maxBudget === null) {
+    return []; // Return NO product cards for casual chat like "how are u"
   }
 
   let matches = products.filter((p) => {
@@ -32,7 +95,7 @@ function extractMatchingProducts(userQuery, products) {
     return title.includes(lower) || cat.includes(lower);
   });
 
-  if (matches.length === 0 && (lower.includes('buy') || lower.includes('shop') || lower.includes('outfit') || lower.includes('recommend') || lower.includes('wear') || lower.includes('price'))) {
+  if (matches.length === 0 && isShoppingQuery) {
     matches = products.slice(0, 2);
   }
 
@@ -72,7 +135,7 @@ const chatWithAIAgent = async (req, res) => {
       .join('\n');
 
     const systemPrompt = `You are a fully capable, highly intelligent AI Assistant just like ChatGPT and Gemini.
-You have complete general intelligence and can chat fluently about ANY question from ANY angle (e.g. general knowledge, life advice, fashion trends, sports, technology, science, history, storytelling, jokes, math, coding, or casual conversation).
+You possess complete general intelligence and can chat fluently about ANY question from ANY angle (e.g. general knowledge, chit-chat, greetings, life advice, fashion trends, sports, technology, science, history, storytelling, jokes, math, coding, or casual conversation).
 
 You also represent J&J Vintage (a luxury couture fashion house in Ghana).
 
@@ -88,20 +151,16 @@ ${catalogSummary}
 
 Core Guidelines:
 1. Answer ANY user question directly, warmly, intelligently, and comprehensively from all angles (exactly like ChatGPT and Gemini).
-2. If the user asks a fashion, styling, or shopping question, naturally integrate advice and mention J&J Vintage products with prices in GH₵.
-3. If the user asks general or non-fashion questions (e.g. greetings, science, advice, stories), answer thoroughly as a brilliant AI assistant.
-4. Maintain a warm, friendly, human tone at all times.`;
+2. If the user asks a casual question (e.g. "how are u?", "tell me a joke", "what is your name?"), answer naturally and warmly like a friend. Do NOT force sales pitches.
+3. If the user asks a fashion, styling, or shopping question, naturally integrate advice and mention J&J Vintage products with prices in GH₵.`;
 
     let aiReplyText = null;
     let engineUsed = null;
 
-    const defaultGroqKey = Buffer.from('Z3NrX0N1NEh6eDZ2NEs4U2s4cVNaY3R5V0dkeWJyb0ZZRWVpU202SVExUWxkd21ZbHhmdWsyV0RK', 'base64').toString('utf-8');
-    const groqKey = process.env.GROQ_API_KEY || defaultGroqKey;
-
     // ==========================================
-    // 🦙 ENGINE 1: Groq Llama 3.3 70B (Primary Ultra-Fast)
+    // 🦙 ENGINE 1: Groq Llama 3.3 70B (Primary LLM Engine)
     // ==========================================
-    if (groqKey) {
+    if (process.env.GROQ_API_KEY) {
       try {
         console.log('[AI Pipeline] Calling Primary LLM Engine: Groq Llama 3.3 70B...');
         const groqRes = await axios.post(
@@ -121,10 +180,10 @@ Core Guidelines:
           },
           {
             headers: {
-              Authorization: `Bearer ${groqKey}`,
+              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
               'Content-Type': 'application/json',
             },
-            timeout: 10000,
+            timeout: 8000,
           }
         );
 
@@ -135,51 +194,44 @@ Core Guidelines:
           console.log('[AI Pipeline] Engine Success: Groq Llama 3.3 70B');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] Groq Llama 3 failed/timed out.', err.response?.data || err.message);
+        console.warn('[AI Pipeline] Groq Llama 3 API call failed:', err.response?.data || err.message);
       }
     }
 
     // ==========================================
-    // 🤖 ENGINE 2: OpenAI GPT (Fallback 1)
+    // ⚡ ENGINE 2: Google Gemini AI (Secondary LLM Engine)
     // ==========================================
-    if (!aiReplyText && process.env.OPENAI_API_KEY) {
+    if (!aiReplyText && process.env.GEMINI_API_KEY) {
       try {
-        console.log('[AI Pipeline] Calling Secondary LLM Engine: OpenAI GPT...');
-        const openaiRes = await axios.post(
-          'https://api.openai.com/v1,chat/completions',
+        console.log('[AI Pipeline] Calling Secondary LLM Engine: Google Gemini AI...');
+        const geminiRes = await axios.post(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
           {
-            model: 'gpt-3.5-turbo',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userMessage },
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: `${systemPrompt}\n\nUser Question: ${userMessage}` }],
+              },
             ],
-            temperature: 0.7,
-            max_tokens: 500,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-              'Content-Type': 'application/json',
-            },
-            timeout: 8000,
-          }
+          { timeout: 8000 }
         );
 
-        const openaiText = openaiRes.data?.choices?.[0]?.message?.content;
-        if (openaiText) {
-          aiReplyText = openaiText;
-          engineUsed = 'OpenAI GPT-3.5';
-          console.log('[AI Pipeline] Engine Success: OpenAI GPT');
+        const geminiText = geminiRes.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (geminiText) {
+          aiReplyText = geminiText;
+          engineUsed = 'Google Gemini AI';
+          console.log('[AI Pipeline] Engine Success: Google Gemini AI');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] OpenAI GPT failed/timed out.', err.response?.data || err.message);
+        console.warn('[AI Pipeline] Gemini AI call failed:', err.response?.data || err.message);
       }
     }
 
-    // Fallback if network offline
+    // Fallback Engine
     if (!aiReplyText) {
-      engineUsed = 'J&J Local Engine';
-      aiReplyText = "Hello! I am your J&J Vintage assistant. How can I help you choose the perfect luxury item today?";
+      engineUsed = 'J&J Conversational Engine';
+      aiReplyText = generateLocalFallback(userMessage, products);
     }
 
     const matchingProducts = extractMatchingProducts(userMessage, products);
