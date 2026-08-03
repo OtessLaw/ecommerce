@@ -16,13 +16,23 @@ export default function StylistWidget() {
 
   useEffect(() => {
     if (isOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+
+      return () => {
+        const savedTop = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        if (savedTop) {
+          window.scrollTo(0, parseInt(savedTop || '0', 10) * -1);
+        }
+      };
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
   const quickPrompts = [
@@ -96,7 +106,8 @@ export default function StylistWidget() {
           {/* Backdrop Overlay for Mobile Isolation */}
           <div
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 sm:hidden"
+            onTouchMove={(e) => e.preventDefault()}
+            className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 sm:hidden"
           />
 
           <div className="fixed bottom-0 left-0 right-0 sm:left-auto sm:right-6 sm:bottom-20 z-50 w-full sm:max-w-md h-[82vh] sm:h-[500px] bg-[#141414] border-t sm:border border-[#2A2A2A] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-fadeIn">

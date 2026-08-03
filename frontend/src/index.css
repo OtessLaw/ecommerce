@@ -12,6 +12,13 @@ html, body {
   overflow-x: hidden !important;
 }
 
+/* Prevent iOS Safari and Mobile Chrome Input Auto-Zoom */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
 #root {
   width: 100%;
   max-width: 100vw;
