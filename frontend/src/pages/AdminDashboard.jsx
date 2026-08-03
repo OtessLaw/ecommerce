@@ -21,6 +21,7 @@ import {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [selectedOrderModal, setSelectedOrderModal] = useState(null);
   const [stats, setStats] = useState(null);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -422,18 +423,23 @@ export default function AdminDashboard() {
                   <thead className="bg-[#1A1A1A] text-gray-400 uppercase font-extrabold border-b border-[#2A2A2A]">
                     <tr>
                       <th className="p-4">Invoice #</th>
-                      <th className="p-4">Customer</th>
+                      <th className="p-4">Customer Name</th>
                       <th className="p-4">Phone (SMS)</th>
+                      <th className="p-4">Delivery Address</th>
                       <th className="p-4">Total</th>
-                      <th className="p-4">Order Status</th>
+                      <th className="p-4">Fulfillment Status</th>
+                      <th className="p-4">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#1F1F1F]">
                     {filteredOrders.map((o) => (
                       <tr key={o._id} className="hover:bg-[#1A1A1A]/50">
                         <td className="p-4 font-mono font-bold text-white">{o.invoiceNumber}</td>
-                        <td className="p-4">{o.shippingAddress?.fullName}</td>
-                        <td className="p-4 font-mono">{o.shippingAddress?.phone}</td>
+                        <td className="p-4 font-semibold text-white">{o.shippingAddress?.fullName}</td>
+                        <td className="p-4 font-mono text-[#D4AF37] font-bold">{o.shippingAddress?.phone}</td>
+                        <td className="p-4 max-w-xs text-gray-300 truncate">
+                          {o.shippingAddress?.street}, {o.shippingAddress?.city}, {o.shippingAddress?.state}, {o.shippingAddress?.country || 'Ghana'}
+                        </td>
                         <td className="p-4 font-bold text-[#D4AF37]">GH₵ {o.totalPrice?.toLocaleString()}</td>
                         <td className="p-4">
                           <select
@@ -447,6 +453,14 @@ export default function AdminDashboard() {
                             <option value="Delivered">Delivered</option>
                             <option value="Cancelled">Cancelled</option>
                           </select>
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => setSelectedOrderModal(o)}
+                            className="px-3 py-1.5 bg-[#2A2A2A] hover:bg-[#D4AF37] hover:text-black text-white text-[11px] font-bold rounded-lg transition"
+                          >
+                            DELIVERY SLIP
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -722,6 +736,92 @@ export default function AdminDashboard() {
                 CREATE COUPON
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {/* CUSTOMER DELIVERY SLIP MODAL */}
+      {selectedOrderModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#141414] border border-[#2A2A2A] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl space-y-4 p-6">
+            <div className="flex justify-between items-center border-b border-[#2A2A2A] pb-3">
+              <div>
+                <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest">J&J VINTAGE DISPATCH SLIP</span>
+                <h3 className="text-lg font-extrabold text-white font-mono">{selectedOrderModal.invoiceNumber}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedOrderModal(null)}
+                className="p-2 text-gray-400 hover:text-white bg-[#1A1A1A] rounded-xl border border-[#2A2A2A]"
+              >
+                <FiClose size={18} />
+              </button>
+            </div>
+
+            {/* Delivery Contact & Address */}
+            <div className="bg-[#1A1A1A] p-4 rounded-xl border border-[#2A2A2A] space-y-2 text-xs">
+              <h4 className="font-extrabold text-white uppercase tracking-wider text-[11px] border-b border-[#2A2A2A] pb-1 text-[#D4AF37]">
+                CUSTOMER DISPATCH DETAILS
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-gray-300">
+                <div>
+                  <span className="text-gray-500 block text-[10px] uppercase">Full Name</span>
+                  <strong className="text-white text-sm">{selectedOrderModal.shippingAddress?.fullName}</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-[10px] uppercase">Phone Number (SMS)</span>
+                  <strong className="text-[#D4AF37] font-mono text-sm">{selectedOrderModal.shippingAddress?.phone}</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-[10px] uppercase">Email</span>
+                  <span className="text-white">{selectedOrderModal.guestEmail || selectedOrderModal.user?.email || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block text-[10px] uppercase">Payment Method</span>
+                  <span className="text-emerald-400 font-bold uppercase">{selectedOrderModal.paymentMethod}</span>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#2A2A2A]">
+                <span className="text-gray-500 block text-[10px] uppercase">Full Street & Delivery Address</span>
+                <p className="text-white font-semibold text-xs mt-0.5">
+                  {selectedOrderModal.shippingAddress?.street}, {selectedOrderModal.shippingAddress?.city},{' '}
+                  {selectedOrderModal.shippingAddress?.state}, {selectedOrderModal.shippingAddress?.country || 'Ghana'}
+                </p>
+              </div>
+            </div>
+
+            {/* Ordered Items Breakdown */}
+            <div className="space-y-2">
+              <h4 className="font-extrabold text-white uppercase tracking-wider text-[11px]">ORDERED ITEMS</h4>
+              <div className="max-h-40 overflow-y-auto space-y-2 divide-y divide-[#1F1F1F]">
+                {selectedOrderModal.orderItems?.map((it, idx) => (
+                  <div key={idx} className="flex justify-between items-center pt-2 text-xs">
+                    <div className="flex items-center space-x-3">
+                      <img src={it.image} alt={it.title} className="w-10 h-10 object-cover rounded-lg border border-[#2A2A2A]" />
+                      <div>
+                        <p className="font-semibold text-white truncate max-w-[180px]">{it.title}</p>
+                        <p className="text-[10px] text-gray-400">Qty: {it.quantity} | Size: {it.selectedSize}</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-[#D4AF37]">GH₵ {(it.price * it.quantity).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Total & Action */}
+            <div className="flex justify-between items-center pt-3 border-t border-[#2A2A2A]">
+              <div>
+                <span className="text-[10px] text-gray-400 block uppercase">Total Amount</span>
+                <span className="text-lg font-extrabold text-[#D4AF37]">GH₵ {selectedOrderModal.totalPrice?.toLocaleString()}</span>
+              </div>
+              <button
+                onClick={() => window.print()}
+                className="gold-btn px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase flex items-center space-x-2 shadow-gold"
+              >
+                <FiPrinter size={16} />
+                <span>PRINT DISPATCH SLIP</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

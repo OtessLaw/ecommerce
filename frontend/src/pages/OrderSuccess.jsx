@@ -65,11 +65,21 @@ export default function OrderSuccess() {
               <span className="font-semibold text-white">{order.shippingAddress?.fullName}</span>
             </div>
             <div className="flex justify-between">
-              <span>Shipping Address:</span>
-              <span className="font-semibold text-white">{order.shippingAddress?.street}, {order.shippingAddress?.city}</span>
+              <span>Phone (SMS):</span>
+              <span className="font-semibold text-white font-mono">{order.shippingAddress?.phone}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Email:</span>
+              <span className="font-semibold text-white">{order.guestEmail || order.user?.email || 'N/A'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Delivery Address:</span>
+              <span className="font-semibold text-white text-right max-w-[220px]">
+                {order.shippingAddress?.street}, {order.shippingAddress?.city}, {order.shippingAddress?.state}, {order.shippingAddress?.country || 'Ghana'}
+              </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-[#2A2A2A] font-bold text-white">
-              <span>Total Paid:</span>
+              <span>Total Amount:</span>
               <span className="text-[#D4AF37]">GH₵ {order.totalPrice?.toLocaleString()}</span>
             </div>
           </div>
