@@ -692,7 +692,7 @@ export default function AdminDashboard() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Price (₦)</label>
+                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Price (GH₵)</label>
                   <input type="number" value={newProd.price} onChange={(e) => setNewProd({ ...newProd, price: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
                 </div>
                 <div>
@@ -705,8 +705,28 @@ export default function AdminDashboard() {
                 <textarea value={newProd.description} onChange={(e) => setNewProd({ ...newProd, description: e.target.value })} required rows={3} className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">Cloudinary Image URL</label>
-                <input type="text" value={newProd.images} onChange={(e) => setNewProd({ ...newProd, images: e.target.value })} required className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]" />
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-semibold text-gray-300 uppercase">PostImage Image URL</label>
+                  <a
+                    href="https://postimages.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-[#D4AF37] hover:underline font-bold flex items-center space-x-1"
+                  >
+                    <span>Upload on Postimages ↗</span>
+                  </a>
+                </div>
+                <input
+                  type="text"
+                  placeholder="e.g. https://i.postimg.cc/..."
+                  value={newProd.images}
+                  onChange={(e) => setNewProd({ ...newProd, images: e.target.value })}
+                  required
+                  className="w-full bg-[#1A1A1A] text-white text-xs rounded-xl p-2.5 border border-[#2A2A2A]"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">
+                  Click 'Upload on Postimages ↗' above to upload your photo, then copy and paste the Direct Link here.
+                </p>
               </div>
               <button type="submit" className="w-full gold-btn py-3 rounded-xl text-xs font-extrabold uppercase tracking-widest">
                 CREATE PRODUCT
