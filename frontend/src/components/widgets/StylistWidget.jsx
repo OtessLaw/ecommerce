@@ -242,13 +242,15 @@ export default function StylistWidget() {
                   <FiCompass size={20} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-extrabold text-white uppercase tracking-tight flex items-center space-x-1.5">
+                  <h4 className="text-sm font-extrabold text-white uppercase tracking-tight flex items-center space-x-2">
                     <span>J&J PERSONAL STYLIST</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-mono">CONCIERGE</span>
+                    <span className="text-[9px] text-emerald-400 font-semibold flex items-center space-x-1 border border-emerald-500/30 px-1.5 py-0.5 rounded-full bg-emerald-500/10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>ONLINE • LIVE FASHION ASSISTANT</span>
+                    </span>
                   </h4>
-                  <p className="text-[10px] text-emerald-400 font-semibold flex items-center space-x-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>ONLINE • LIVE FASHION ASSISTANT</span>
+                  <p className="text-[10px] text-[#D4AF37] font-semibold tracking-wider uppercase mt-0.5">
+                    POWERED BY OTECH
                   </p>
                 </div>
               </div>
