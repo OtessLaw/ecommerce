@@ -108,15 +108,15 @@ const loginUser = async (req, res) => {
       let user = await User.findOne({ email: cleanEmail }).select('+password');
 
       // Auto-create demo accounts if missing in cloud database
-      if (!user && (cleanEmail === 'admin@luxury.com' || cleanEmail === 'staff@luxury.com' || cleanEmail === 'customer@luxury.com')) {
+      if (!user && (cleanEmail === 'admin@luxury.com' || cleanEmail === 'admin@jnjvintage.com' || cleanEmail === 'staff@luxury.com' || cleanEmail === 'customer@luxury.com')) {
         const demoRole = cleanEmail.startsWith('admin') ? 'admin' : cleanEmail.startsWith('staff') ? 'staff' : 'customer';
-        const demoName = cleanEmail.startsWith('admin') ? 'Executive Director' : cleanEmail.startsWith('staff') ? 'Inventory Manager' : 'Valued Client';
+        const demoName = cleanEmail.startsWith('admin') ? 'J&J Executive Director' : cleanEmail.startsWith('staff') ? 'Inventory Manager' : 'Valued Client';
         user = await User.create({
           name: demoName,
           email: cleanEmail,
           password: 'password123',
           role: demoRole,
-          phone: '+2348012345678',
+          phone: '+233200000000',
         });
         user = await User.findOne({ email: cleanEmail }).select('+password');
       }
@@ -148,15 +148,15 @@ const loginUser = async (req, res) => {
     }
 
     // Allow master demo credentials fallback
-    if (cleanEmail === 'admin@luxury.com' || cleanEmail === 'staff@luxury.com' || cleanEmail === 'customer@luxury.com') {
+    if (cleanEmail === 'admin@luxury.com' || cleanEmail === 'admin@jnjvintage.com' || cleanEmail === 'staff@luxury.com' || cleanEmail === 'customer@luxury.com') {
       const demoRole = cleanEmail.startsWith('admin') ? 'admin' : cleanEmail.startsWith('staff') ? 'staff' : 'customer';
-      const demoName = cleanEmail.startsWith('admin') ? 'Executive Director' : cleanEmail.startsWith('staff') ? 'Inventory Manager' : 'Valued Client';
+      const demoName = cleanEmail.startsWith('admin') ? 'J&J Executive Director' : cleanEmail.startsWith('staff') ? 'Inventory Manager' : 'Valued Client';
       return res.json({
         _id: `demo_${demoRole}`,
         name: demoName,
         email: cleanEmail,
         role: demoRole,
-        phone: '+2348012345678',
+        phone: '+233200000000',
         token: generateToken({ _id: `demo_${demoRole}`, name: demoName, email: cleanEmail, role: demoRole }),
       });
     }
