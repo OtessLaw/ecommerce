@@ -76,10 +76,7 @@ const verifyPayment = async (req, res) => {
           await order.save();
 
           if (order.shippingAddress?.phone) {
-            fasreachService.sendSMS({
-              recipient: order.shippingAddress.phone,
-              message: `Payment Confirmed! Your J&J Vintage order #${order.invoiceNumber} is now being processed.`,
-            });
+            fasreachService.sendPaymentSuccessful(order.shippingAddress.phone, order.invoiceNumber);
           }
         }
       } else if (orderId) {

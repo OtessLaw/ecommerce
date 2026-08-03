@@ -59,10 +59,11 @@ const createOrder = async (req, res) => {
 
       const createdOrder = await order.save();
 
-      // Send SMS alert
+      // Send SMS alert with exact JNJ Vintage templates
       const phone = shippingAddress.phone || req.user?.phone;
+      const customerName = shippingAddress.fullName || req.user?.name || 'Valued Customer';
       if (phone) {
-        fasreachService.sendOrderConfirmation(phone, invoiceNum, totalPrice);
+        fasreachService.sendOrderConfirmation(phone, invoiceNum, totalPrice, customerName, paymentMethod);
       }
 
       return res.status(201).json(createdOrder);
@@ -91,7 +92,8 @@ const createOrder = async (req, res) => {
 
     // Send SMS
     if (shippingAddress?.phone) {
-      fasreachService.sendOrderConfirmation(shippingAddress.phone, invoiceNum, totalPrice);
+      const customerName = shippingAddress.fullName || req.user?.name || 'Valued Customer';
+      fasreachService.sendOrderConfirmation(shippingAddress.phone, invoiceNum, totalPrice, customerName, paymentMethod);
     }
 
     res.status(201).json(mockOrder);
@@ -170,10 +172,7 @@ const updateOrderStatus = async (req, res) => {
       const updated = await order.save();
 
       if (order.shippingAddress?.phone) {
-        fasreachService.sendSMS({
-          recipient: order.shippingAddress.phone,
-          message: `J&J Vintage Order #${order.invoiceNumber} status updated to '${status}'. Tracking: ${trackingNumber || 'N/A'}. Thank you for shopping with J&J Vintage!`,
-        });
+        fasreachService.sendOrderStatusUpdate(order.shippingAddress.phone, order.invoiceNumber, status);
       }
 
       return res.json(updated);
