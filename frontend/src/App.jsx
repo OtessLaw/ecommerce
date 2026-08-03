@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import CartDrawer from './components/cart/CartDrawer';
@@ -19,13 +19,16 @@ import StylistWidget from './components/widgets/StylistWidget';
 import SocialProofToast from './components/widgets/SocialProofToast';
 
 export default function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#0B0B0B] text-white">
       <ScrollToTop />
-      <Navbar />
-      <CartDrawer />
-      <StylistWidget />
-      <SocialProofToast />
+      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && <CartDrawer />}
+      {!isAdminRoute && <StylistWidget />}
+      {!isAdminRoute && <SocialProofToast />}
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -40,9 +43,10 @@ export default function App() {
           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
           <Route path="/customer/wishlist" element={<CustomerDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }
