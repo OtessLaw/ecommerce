@@ -167,11 +167,20 @@ export default function StylistWidget() {
     setInput('');
     setIsTyping(true);
 
+    const startTime = Date.now();
+
     try {
       const { data } = await API.post('/ai/chat', {
         message: userMsg,
         history: newMsgs.map((m) => ({ role: m.sender, content: m.text })),
       });
+
+      // Enforce realistic human typing delay (minimum 1.8 seconds)
+      const elapsedTime = Date.now() - startTime;
+      const minDelay = 1800;
+      if (elapsedTime < minDelay) {
+        await new Promise((resolve) => setTimeout(resolve, minDelay - elapsedTime));
+      }
 
       setMessages([
         ...newMsgs,
@@ -182,6 +191,12 @@ export default function StylistWidget() {
         },
       ]);
     } catch (err) {
+      const elapsedTime = Date.now() - startTime;
+      const minDelay = 1800;
+      if (elapsedTime < minDelay) {
+        await new Promise((resolve) => setTimeout(resolve, minDelay - elapsedTime));
+      }
+
       const fallback = generateChatGPTResponse(userMsg);
       setMessages([
         ...newMsgs,
