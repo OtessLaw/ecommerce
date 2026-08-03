@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../components/admin/AdminSidebar';
+import { useCurrency } from '../context/CurrencyContext';
 import API from '../services/api';
 import toast from 'react-hot-toast';
 import {
@@ -20,6 +21,7 @@ import {
 } from 'react-icons/fi';
 
 export default function AdminDashboard() {
+  const { formatPrice } = useCurrency();
   const [activeTab, setActiveTab] = useState('overview');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [selectedOrderModal, setSelectedOrderModal] = useState(null);
@@ -243,7 +245,7 @@ export default function AdminDashboard() {
                     <span className="text-xs font-bold uppercase">Total Revenue</span>
                     <div className="p-2 bg-[#D4AF37]/10 text-[#D4AF37] rounded-lg"><FiDollar size={18} /></div>
                   </div>
-                  <p className="text-2xl font-extrabold text-white">GH₵ {stats?.totalRevenue?.toLocaleString() || '148'}</p>
+                  <p className="text-2xl font-extrabold text-white">{formatPrice(stats?.totalRevenue || 148)}</p>
                   <p className="text-[10px] text-emerald-400 font-semibold mt-1">+18.4% this month</p>
                 </div>
 
@@ -295,8 +297,8 @@ export default function AdminDashboard() {
 
           {/* TAB 2: PRODUCTS CATALOG */}
           {activeTab === 'products' && (
-            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-              <table className="w-full text-left text-xs text-gray-300">
+            <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-x-auto w-full no-scrollbar">
+              <table className="w-full text-left text-xs text-gray-300 min-w-[600px]">
                 <thead className="bg-[#1A1A1A] text-gray-400 uppercase font-extrabold border-b border-[#2A2A2A]">
                   <tr>
                     <th className="p-4">Item</th>
@@ -316,7 +318,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="p-4 font-mono">{p.sku}</td>
                       <td className="p-4">{p.parentCategory}</td>
-                      <td className="p-4 font-bold text-[#D4AF37]">GH₵ {p.price?.toLocaleString()}</td>
+                      <td className="p-4 font-bold text-[#D4AF37]">{formatPrice(p.price)}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-[10px] font-bold ${p.stock > 5 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
                           {p.stock} in stock
@@ -419,8 +421,8 @@ export default function AdminDashboard() {
                 ))}
               </div>
 
-              <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-hidden">
-                <table className="w-full text-left text-xs text-gray-300">
+              <div className="bg-[#141414] rounded-2xl border border-[#2A2A2A] overflow-x-auto w-full no-scrollbar">
+                <table className="w-full text-left text-xs text-gray-300 min-w-[750px]">
                   <thead className="bg-[#1A1A1A] text-gray-400 uppercase font-extrabold border-b border-[#2A2A2A]">
                     <tr>
                       <th className="p-4">Invoice #</th>
@@ -441,7 +443,7 @@ export default function AdminDashboard() {
                         <td className="p-4 max-w-xs text-gray-300 truncate">
                           {o.shippingAddress?.street}, {o.shippingAddress?.city}, {o.shippingAddress?.state}, {o.shippingAddress?.country || 'Ghana'}
                         </td>
-                        <td className="p-4 font-bold text-[#D4AF37]">GH₵ {o.totalPrice?.toLocaleString()}</td>
+                        <td className="p-4 font-bold text-[#D4AF37]">{formatPrice(o.totalPrice)}</td>
                         <td className="p-4">
                           <select
                             value={o.orderStatus || 'Pending'}
