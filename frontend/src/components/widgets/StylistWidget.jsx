@@ -140,7 +140,7 @@ export default function StylistWidget() {
     };
   };
 
-  const handleSend = (textToSend) => {
+  const handleSend = async (textToSend) => {
     const userMsg = textToSend || input;
     if (!userMsg.trim()) return;
 
@@ -149,18 +149,33 @@ export default function StylistWidget() {
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const response = generateChatGPTResponse(userMsg);
+    try {
+      const { data } = await API.post('/ai/chat', {
+        message: userMsg,
+        history: newMsgs.map((m) => ({ role: m.sender, content: m.text })),
+      });
+
       setMessages([
         ...newMsgs,
         {
           sender: 'stylist',
-          text: response.text,
-          recommendations: response.recommendations,
+          text: data.text || 'I have curated these special items for you from J&J Vintage:',
+          recommendations: data.recommendations || [],
         },
       ]);
+    } catch (err) {
+      const fallback = generateChatGPTResponse(userMsg);
+      setMessages([
+        ...newMsgs,
+        {
+          sender: 'stylist',
+          text: fallback.text,
+          recommendations: fallback.recommendations,
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   return (
