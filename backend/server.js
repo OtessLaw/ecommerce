@@ -42,14 +42,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 app.use(xss());
 
-// Primary Health Route
+// Primary Health & Anti-Sleep Ping Routes
 app.get('/', (req, res) => {
   res.json({
-    name: 'Luxury E-Commerce Enterprise API',
+    name: 'J&J Vintage Enterprise API',
     status: 'Operational',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
+});
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'J&J Vintage Backend Server is Active', timestamp: new Date().toISOString() });
+});
+app.get('/api/ping', (req, res) => {
+  res.status(200).send('pong');
 });
 
 // API Routes
@@ -67,7 +73,16 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  console.log(`[Luxury E-Commerce Server] Running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`[J&J Vintage Server] Running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+
+  // Self-Ping Heartbeat every 10 minutes to keep Render backend awake 24/7
+  setInterval(async () => {
+    try {
+      const axios = require('axios');
+      await axios.get('https://jj-vintage-backend.onrender.com/api/ping');
+      console.log('[Heartbeat] Self-ping active to prevent Render sleep.');
+    } catch (e) {}
+  }, 10 * 60 * 1000);
 });
 
 server.on('error', (err) => {
@@ -75,7 +90,7 @@ server.on('error', (err) => {
     const ALT_PORT = Number(PORT) + 1;
     console.warn(`[Port ${PORT} in use] Switching to fallback port ${ALT_PORT}...`);
     app.listen(ALT_PORT, () => {
-      console.log(`[Luxury E-Commerce Server] Running on fallback port ${ALT_PORT}`);
+      console.log(`[J&J Vintage Server] Running on fallback port ${ALT_PORT}`);
     });
   }
 });
