@@ -62,7 +62,7 @@ export default function ProductCard({ product }) {
       {/* Details */}
       <div className="p-5 space-y-2">
         <div className="flex justify-between items-center text-[11px] text-gray-400 uppercase tracking-widest font-semibold">
-          <span>{product.brand || 'ANTIGRAVITY ATELIER'}</span>
+          <span>{product.brand || 'J&J VINTAGE'}</span>
           <div className="flex items-center space-x-1 text-[#D4AF37]">
             <FiStar size={12} className="fill-current" />
             <span>{product.rating || 4.9}</span>

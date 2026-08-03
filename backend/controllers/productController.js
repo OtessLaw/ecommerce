@@ -216,7 +216,7 @@ const createProduct = async (req, res) => {
       stock: Number(stock) || 10,
       sizes: sizes || ['S', 'M', 'L', 'XL'],
       colors: colors || [{ name: 'Black', hex: '#000000' }],
-      brand: brand || 'Antigravity Atelier',
+      brand: brand || 'J&J Vintage',
       rating: 5.0,
       numReviews: 1,
       isFeatured: true,

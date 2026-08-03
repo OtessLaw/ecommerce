@@ -114,7 +114,7 @@ export default function ProductDetail() {
         {/* Product Details & Selection */}
         <div className="space-y-6">
           <div>
-            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">{product.brand || 'ANTIGRAVITY ATELIER'}</span>
+            <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">{product.brand || 'J&J VINTAGE'}</span>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white uppercase tracking-tight mt-1">{product.title}</h1>
             <div className="flex items-center space-x-4 mt-2">
               <div className="flex items-center space-x-1 text-[#D4AF37]">

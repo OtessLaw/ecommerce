@@ -9,7 +9,7 @@ export default function Footer() {
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email.trim()) {
-      toast.success('Thank you for subscribing to Antigravity Atelier Private Club!');
+      toast.success('Thank you for subscribing to J&J Vintage Private Club!');
       setEmail('');
     }
   };

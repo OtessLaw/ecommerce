@@ -167,7 +167,7 @@ export default function Home() {
         <div className="text-center space-y-2 mb-10">
           <div className="flex justify-center items-center space-x-2 text-[#D4AF37]">
             <FiInstagram size={20} />
-            <span className="text-xs font-bold uppercase tracking-widest">@ANTIGRAVITY_ATELIER</span>
+            <span className="text-xs font-bold uppercase tracking-widest">@JNJ_VINTAGE</span>
           </div>
           <h2 className="text-3xl font-extrabold text-white uppercase tracking-tight">
             RUNWAY <span className="gold-gradient-text">& STREET INSPIRATION</span>

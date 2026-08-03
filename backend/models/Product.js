@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
       enum: ['Men', 'Women', 'Kids', 'Shoes', 'Sneakers', 'Bags', 'Accessories', 'Jewelry', 'Beauty', 'New Arrivals', 'Luxury', 'Sale'],
       required: true,
     },
-    brand: { type: String, default: 'Antigravity Atelier' },
+    brand: { type: String, default: 'J&J Vintage' },
     stock: { type: Number, required: true, default: 10, min: 0 },
     lowStockThreshold: { type: Number, default: 5 },
     stockHistory: [stockHistorySchema],
