@@ -13,7 +13,7 @@ function generateLocalFallback(userQuery, products) {
 
   // 2. Greetings & Who are you
   if (lower.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you|what is your name)\b/)) {
-    return "Hello! 👋 I am your J&J Vintage AI Fashion Concierge. It's a pleasure to connect with you. What can I help you discover or style today?";
+    return "Hello! 👋 I am your J&J Vintage Fashion Concierge. It's a pleasure to connect with you. What can I help you discover or style today?";
   }
 
   // 3. Gratitude & Compliments
@@ -23,7 +23,7 @@ function generateLocalFallback(userQuery, products) {
 
   // 4. Identity & Creator questions
   if (lower.match(/\b(who (made|created|built) you|are you (real|human|ai|bot)|what are you)\b/)) {
-    return "I am an AI Personal Fashion Stylist created for J&J Vintage! I'm trained to help you explore luxury fashion, find matching outfits, calculate your exact fit, and answer any shopping questions.";
+    return "I am your Personal Fashion Stylist at J&J Vintage! I'm here to help you explore luxury fashion, find matching outfits, calculate your exact fit, and answer any shopping questions.";
   }
 
   // 5. Entertainment & Jokes
@@ -144,7 +144,7 @@ const chatWithAIAgent = async (req, res) => {
       .filter((line) => !line.includes('undefined'))
       .join('\n');
 
-    const systemPrompt = `You are the AI Personal Stylist & Concierge for J&J Vintage (a luxury vintage fashion house in Ghana).
+    const systemPrompt = `You are the Personal Stylist & Concierge for J&J Vintage (a luxury vintage fashion house in Ghana).
 
 Store Context:
 - Store: J&J Vintage

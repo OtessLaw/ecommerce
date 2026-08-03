@@ -74,7 +74,7 @@ export default function StylistWidget() {
 
     if (lower.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening|who are you)\b/)) {
       return {
-        text: "Hello! 👋 It is a pleasure to meet you. I am your personal J&J Vintage AI Stylist. How can I help you today?",
+        text: "Hello! 👋 It is a pleasure to meet you. I am your personal J&J Vintage Stylist. How can I help you today?",
         recommendations: [],
       };
     }
@@ -205,7 +205,7 @@ export default function StylistWidget() {
       >
         <FiCompass size={22} className="animate-spin-slow" />
         <span className="hidden sm:inline text-xs font-extrabold uppercase tracking-wider pr-1">
-          AI CHAT STYLIST
+          PERSONAL STYLIST
         </span>
       </button>
 
@@ -228,8 +228,8 @@ export default function StylistWidget() {
                 </div>
                 <div>
                   <h4 className="text-sm font-extrabold text-white uppercase tracking-tight flex items-center space-x-1.5">
-                    <span>J&J AI STYLIST</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-mono">GPT-4</span>
+                    <span>J&J PERSONAL STYLIST</span>
+                    <span className="px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#D4AF37] text-[9px] font-mono">CONCIERGE</span>
                   </h4>
                   <p className="text-[10px] text-emerald-400 font-semibold flex items-center space-x-1">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -293,7 +293,7 @@ export default function StylistWidget() {
                     <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce" />
                     <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce delay-100" />
                     <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-bounce delay-200" />
-                    <span>J&J AI is typing...</span>
+                    <span>J&J Stylist is typing...</span>
                   </div>
                 </div>
               )}
@@ -325,7 +325,7 @@ export default function StylistWidget() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Chat with AI Stylist..."
+                placeholder="Ask your Personal Stylist..."
                 className="flex-1 bg-[#1A1A1A] text-white text-base sm:text-xs rounded-xl px-3.5 py-2.5 border border-[#2A2A2A] focus:border-[#D4AF37] outline-none"
               />
               <button type="submit" className="gold-btn px-4 py-2.5 rounded-xl text-black flex items-center justify-center">
