@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiLock, FiMail, FiShield, FiUserCheck } from 'react-icons/fi';
+import { FiLock, FiMail } from 'react-icons/fi';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -21,56 +21,12 @@ export default function Login() {
     } catch (err) {}
   };
 
-  const handleDemoLogin = async (demoEmail, demoRole) => {
-    setEmail(demoEmail);
-    setPassword('password123');
-    try {
-      const user = await login(demoEmail, 'password123');
-      if (demoRole === 'admin' || demoRole === 'staff') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/customer/dashboard');
-      }
-    } catch (err) {}
-  };
-
   return (
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="bg-[#141414] p-8 rounded-3xl border border-[#2A2A2A] shadow-2xl space-y-6">
         <div className="text-center space-y-2">
           <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">ATELIER MEMBER PORTAL</span>
           <h1 className="text-2xl font-extrabold text-white uppercase">SIGN IN TO ACCOUNT</h1>
-        </div>
-
-        {/* Demo Quick Logins */}
-        <div className="bg-[#1A1A1A] p-3 rounded-2xl border border-[#2A2A2A] space-y-2">
-          <p className="text-[11px] font-bold text-gray-400 uppercase text-center">Quick Demo One-Click Sign In</p>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('admin@luxury.com', 'admin')}
-              className="py-1.5 px-2 bg-[#2A2A2A] hover:bg-[#D4AF37] hover:text-black text-[#D4AF37] text-[10px] font-bold rounded-xl transition flex items-center justify-center space-x-1"
-            >
-              <FiShield size={12} />
-              <span>ADMIN</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('staff@luxury.com', 'staff')}
-              className="py-1.5 px-2 bg-[#2A2A2A] hover:bg-[#D4AF37] hover:text-black text-[#D4AF37] text-[10px] font-bold rounded-xl transition flex items-center justify-center space-x-1"
-            >
-              <FiShield size={12} />
-              <span>STAFF</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('customer@luxury.com', 'customer')}
-              className="py-1.5 px-2 bg-[#2A2A2A] hover:bg-white hover:text-black text-white text-[10px] font-bold rounded-xl transition flex items-center justify-center space-x-1"
-            >
-              <FiUserCheck size={12} />
-              <span>CUSTOMER</span>
-            </button>
-          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
