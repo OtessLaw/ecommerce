@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const fasreachService = require('../services/fasreachService');
@@ -102,20 +103,55 @@ const createOrder = async (req, res) => {
   }
 };
 
-// @desc    Get order by ID
+// @desc    Get single order by ID, Invoice Number, or Phone
 // @route   GET /api/orders/:id
 // @access  Public / Private
 const getOrderById = async (req, res) => {
   try {
+    const rawQuery = (req.params.id || '').trim();
+    if (!rawQuery) {
+      return res.status(400).json({ message: 'Order query parameter required' });
+    }
+
     if (Order.db && Order.db.readyState === 1) {
-      const order = await Order.findById(req.params.id).populate('user', 'name email');
+      let order = null;
+
+      // 1. Search by Invoice Number or Order Number
+      order = await Order.findOne({
+        $or: [
+          { invoiceNumber: { $regex: '^' + rawQuery + '$', $options: 'i' } },
+          { orderNumber: { $regex: '^' + rawQuery + '$', $options: 'i' } },
+        ],
+      });
+
+      // 2. Search by Phone Number if digits entered
+      const cleanDigits = rawQuery.replace(/[^0-9]/g, '');
+      if (!order && cleanDigits.length >= 7) {
+        order = await Order.findOne({
+          'shippingAddress.phone': { $regex: cleanDigits },
+        }).sort({ createdAt: -1 });
+      }
+
+      // 3. Fallback to ObjectId lookup if 24-char hex string
+      if (!order && mongoose.Types.ObjectId.isValid(rawQuery)) {
+        order = await Order.findById(rawQuery);
+      }
+
       if (order) return res.json(order);
     }
 
-    const found = memoryOrders.find((o) => o._id === req.params.id || o.invoiceNumber === req.params.id);
+    // In-memory fallback lookup
+    const found = memoryOrders.find(
+      (o) =>
+        o._id === rawQuery ||
+        o.invoiceNumber?.toLowerCase() === rawQuery.toLowerCase() ||
+        o.orderNumber?.toLowerCase() === rawQuery.toLowerCase() ||
+        (rawQuery.replace(/[^0-9]/g, '').length >= 7 && o.shippingAddress?.phone?.replace(/[^0-9]/g, '').includes(rawQuery.replace(/[^0-9]/g, '')))
+    );
+
     if (found) return res.json(found);
 
-    res.status(404).json({ message: 'Order not found' });
+    res.status(404).json({ message: 'No order found matching this Invoice Number or Phone' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

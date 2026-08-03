@@ -18,8 +18,22 @@ export default function CustomerDashboard() {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await API.get('/orders/myorders');
-      setOrders(data || []);
+      let orderList = [];
+      try {
+        const { data } = await API.get('/orders/myorders');
+        if (Array.isArray(data) && data.length > 0) orderList = data;
+      } catch (e) {}
+
+      // Fallback for guest checkout orders
+      const localGuest = JSON.parse(localStorage.getItem('luxury_guest_orders') || '[]');
+      if (Array.isArray(localGuest) && localGuest.length > 0) {
+        const existingIds = new Set(orderList.map((o) => o._id));
+        localGuest.forEach((g) => {
+          if (!existingIds.has(g._id)) orderList.push(g);
+        });
+      }
+
+      setOrders(orderList);
     } catch (err) {
       console.error('Error loading my orders', err);
     } finally {

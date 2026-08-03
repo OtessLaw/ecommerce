@@ -46,7 +46,15 @@ export default function Checkout() {
     try {
       // 1. Create order on backend
       const orderPayload = {
-        orderItems: cartItems,
+        orderItems: cartItems.map((item) => ({
+          product: item._id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          selectedColor: item.selectedColor || 'Standard',
+          selectedSize: item.selectedSize || 'M',
+          image: item.image || (Array.isArray(item.images) ? item.images[0] : item.images),
+        })),
         shippingAddress: {
           fullName: formData.fullName,
           phone: formData.phone,
@@ -65,6 +73,13 @@ export default function Checkout() {
       };
 
       const { data: createdOrder } = await API.post('/orders', orderPayload);
+
+      // Save to guest orders storage for instant tracking
+      try {
+        const existing = JSON.parse(localStorage.getItem('luxury_guest_orders') || '[]');
+        const updated = [createdOrder, ...existing.filter((o) => o._id !== createdOrder._id)];
+        localStorage.setItem('luxury_guest_orders', JSON.stringify(updated.slice(0, 10)));
+      } catch (e) {}
 
       if (formData.paymentMethod === 'CashOnDelivery') {
         clearCart();
