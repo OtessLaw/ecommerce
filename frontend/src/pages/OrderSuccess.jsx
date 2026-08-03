@@ -41,7 +41,7 @@ export default function OrderSuccess() {
       <div className="space-y-2">
         <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">TRANSACTION CONFIRMED</span>
         <h1 className="text-3xl font-extrabold text-white uppercase tracking-tight">
-          THANK YOU FOR YOUR <span className="gold-gradient-text">ATELIER ORDER</span>
+          THANK YOU FOR YOUR <span className="gold-gradient-text">J&J VINTAGE ORDER</span>
         </h1>
         <p className="text-xs text-gray-400 max-w-md mx-auto">
           Your order has been recorded securely and an SMS confirmation alert has been dispatched to your mobile number.

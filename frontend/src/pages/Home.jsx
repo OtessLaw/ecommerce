@@ -63,7 +63,7 @@ export default function Home() {
           <div>
             <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">CURATED CATEGORIES</span>
             <h2 className="text-3xl font-extrabold text-white tracking-tight uppercase mt-1">
-              THE <span className="gold-gradient-text">ATELIER</span> DEPARTMENTS
+              THE <span className="gold-gradient-text">J&J VINTAGE</span> DEPARTMENTS
             </h2>
           </div>
           <Link to="/shop" className="text-xs text-[#D4AF37] font-bold uppercase tracking-wider flex items-center space-x-1 hover:underline mt-2 md:mt-0">

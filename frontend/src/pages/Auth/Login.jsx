@@ -25,7 +25,7 @@ export default function Login() {
     <div className="max-w-md mx-auto px-4 py-16">
       <div className="bg-[#141414] p-8 rounded-3xl border border-[#2A2A2A] shadow-2xl space-y-6">
         <div className="text-center space-y-2">
-          <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">ATELIER MEMBER PORTAL</span>
+          <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">J&J VINTAGE MEMBER PORTAL</span>
           <h1 className="text-2xl font-extrabold text-white uppercase">SIGN IN TO ACCOUNT</h1>
         </div>
 

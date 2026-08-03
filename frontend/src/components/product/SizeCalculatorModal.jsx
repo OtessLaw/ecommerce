@@ -31,7 +31,7 @@ export default function SizeCalculatorModal({ isOpen, onClose, onSelectSize, ava
       <div className="bg-[#141414] border border-[#2A2A2A] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl p-6 space-y-6">
         <div className="flex justify-between items-center border-b border-[#2A2A2A] pb-3">
           <div>
-            <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest">ATELIER FIT ADVISOR</span>
+            <span className="text-[10px] text-[#D4AF37] font-bold uppercase tracking-widest">J&J VINTAGE FIT ADVISOR</span>
             <h3 className="text-lg font-extrabold text-white uppercase tracking-tight">SMART SIZE CALCULATOR</h3>
           </div>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-white bg-[#1A1A1A] rounded-xl border border-[#2A2A2A]">

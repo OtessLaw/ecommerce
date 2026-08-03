@@ -52,7 +52,7 @@ export default function CustomerDashboard() {
             {user?.name?.charAt(0) || 'U'}
           </div>
           <div>
-            <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">ATELIER CLIENT MEMBER</span>
+            <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-widest">J&J VINTAGE CLIENT MEMBER</span>
             <h1 className="text-2xl font-extrabold text-white">{user?.name || 'Valued Client'}</h1>
             <p className="text-xs text-gray-400">{user?.email}</p>
           </div>
@@ -88,7 +88,7 @@ export default function CustomerDashboard() {
             {orders.length === 0 ? (
               <div className="bg-[#141414] p-12 rounded-2xl border border-[#2A2A2A] text-center space-y-3">
                 <FiPackage size={36} className="mx-auto text-gray-600" />
-                <p className="text-sm text-gray-400">You haven't placed any atelier orders yet.</p>
+                <p className="text-sm text-gray-400">You haven't placed any J&J Vintage orders yet.</p>
               </div>
             ) : (
               orders.map((ord) => (

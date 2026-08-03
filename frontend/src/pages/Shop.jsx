@@ -6,7 +6,7 @@ import API from '../services/api';
 import { FiFilter, FiX, FiCheck } from 'react-icons/fi';
 
 const categories = ['Men', 'Women', 'Kids', 'Shoes', 'Sneakers', 'Bags', 'Accessories', 'Jewelry', 'Beauty'];
-const brands = ['Balmain Paris', 'Saint Laurent', 'Rolex Heritage', 'Gucci Vault', 'Off-White atelier', 'Fear of God'];
+const brands = ['Balmain Paris', 'Saint Laurent', 'Rolex Heritage', 'Gucci Vault', 'Off-White Paris', 'Fear of God'];
 const colors = [
   { name: 'Matte Black', hex: '#0B0B0B' },
   { name: 'Gold Onyx', hex: '#D4AF37' },
@@ -91,7 +91,7 @@ export default function Shop() {
       {/* Header Title */}
       <div className="border-b border-[#2A2A2A] pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">ATELIER CATALOGUE</span>
+          <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">J&J VINTAGE CATALOGUE</span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white uppercase tracking-tight mt-1">
             LUXURY <span className="gold-gradient-text">COUTURE & FOOTWEAR</span>
           </h1>

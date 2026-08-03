@@ -166,7 +166,7 @@ export default function TrackOrder() {
                   <FiCheckCircle size={18} />
                   <span className="text-xs font-bold uppercase">1. Order Received</span>
                 </div>
-                <p className="text-[10px] text-gray-400">Order recorded in atelier system.</p>
+                <p className="text-[10px] text-gray-400">Order recorded in J&J Vintage system.</p>
               </div>
 
               {/* Step 2: Processing */}
