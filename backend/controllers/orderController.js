@@ -62,10 +62,7 @@ const createOrder = async (req, res) => {
       // Send SMS alert
       const phone = shippingAddress.phone || req.user?.phone;
       if (phone) {
-        fasreachService.sendSMS({
-          recipient: phone,
-          message: `Dear ${shippingAddress.fullName}, your J&J Vintage order #${invoiceNum} (₦${totalPrice.toLocaleString()}) has been received!`,
-        });
+        fasreachService.sendOrderConfirmation(phone, invoiceNum, totalPrice);
       }
 
       return res.status(201).json(createdOrder);
@@ -94,10 +91,7 @@ const createOrder = async (req, res) => {
 
     // Send SMS
     if (shippingAddress?.phone) {
-      fasreachService.sendSMS({
-        recipient: shippingAddress.phone,
-        message: `Dear ${shippingAddress.fullName}, your J&J Vintage order #${invoiceNum} (₦${totalPrice.toLocaleString()}) has been placed successfully!`,
-      });
+      fasreachService.sendOrderConfirmation(shippingAddress.phone, invoiceNum, totalPrice);
     }
 
     res.status(201).json(mockOrder);

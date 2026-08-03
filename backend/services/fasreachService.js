@@ -3,25 +3,40 @@ const axios = require('axios');
 class FasreachService {
   constructor() {
     this.apiKey = process.env.FASREACH_API_KEY || 'bms_live_1785502841008_np14a00zkx';
-    this.senderId = process.env.FASREACH_SENDER_ID || 'JJVINTAGE';
+    this.senderId = process.env.FASREACH_SENDER_ID || 'FASREACH';
     this.baseURL = 'https://fasreach.com/api/sms/send';
   }
 
   getCredentials() {
     try {
       const adminController = require('../controllers/adminController');
-      if (adminController.storeSettings) {
+      if (adminController.storeSettings && adminController.storeSettings.fasreachApiKey) {
         return {
           apiKey: adminController.storeSettings.fasreachApiKey || this.apiKey,
-          senderId: adminController.storeSettings.fasreachSenderId || this.senderId || 'JJVINTAGE',
+          senderId: adminController.storeSettings.fasreachSenderId || this.senderId || 'FASREACH',
         };
       }
     } catch (e) {}
     return { apiKey: this.apiKey, senderId: this.senderId };
   }
 
-  async sendSMS(recipient, message) {
+  async sendSMS(recipientOrOptions, msgText) {
+    let recipient = '';
+    let message = '';
+    let customSender = '';
+
+    // Handle both sendSMS(recipient, message) and sendSMS({ recipient, to, message, sender })
+    if (typeof recipientOrOptions === 'object' && recipientOrOptions !== null) {
+      recipient = recipientOrOptions.recipient || recipientOrOptions.to || recipientOrOptions.phone || '';
+      message = recipientOrOptions.message || msgText || '';
+      customSender = recipientOrOptions.sender || '';
+    } else {
+      recipient = recipientOrOptions || '';
+      message = msgText || '';
+    }
+
     const { apiKey, senderId } = this.getCredentials();
+    const finalSender = customSender || senderId || 'FASREACH';
     const cleanPhone = (recipient || '').toString().replace(/[^0-9]/g, '');
 
     if (!cleanPhone) {
@@ -30,14 +45,14 @@ class FasreachService {
     }
 
     try {
-      console.log(`[FastReach SMS Dispatch] To: ${cleanPhone} | Sender: ${senderId} | API Key: ${apiKey.substring(0, 10)}...`);
+      console.log(`[FastReach SMS Dispatch] To: ${cleanPhone} | Sender: ${finalSender} | API Key: ${apiKey.substring(0, 10)}...`);
       
       const response = await axios.post(
         this.baseURL,
         {
           to: cleanPhone,
           message: message,
-          sender: senderId,
+          sender: finalSender,
         },
         {
           headers: {
@@ -53,10 +68,10 @@ class FasreachService {
     } catch (error) {
       console.error('[FastReach SMS Delivery Error]', error.response?.data || error.message);
       
-      // Fallback try with default FASREACH sender if custom sender ID fails
-      if (senderId !== 'FASREACH') {
+      // Fallback try with default FASREACH sender if custom sender ID failed
+      if (finalSender !== 'FASREACH') {
         try {
-          console.log(`[FastReach SMS Retry] Trying fallback sender FASREACH...`);
+          console.log(`[FastReach SMS Retry] Trying default FASREACH sender ID...`);
           const retryRes = await axios.post(
             this.baseURL,
             {
@@ -84,17 +99,17 @@ class FasreachService {
   }
 
   async sendOrderConfirmation(phone, invoiceNumber, amount) {
-    const message = `J&J VINTAGE: Your order ${invoiceNumber} for GHc ${amount} has been confirmed! Thank you for shopping with us.`;
+    const message = `J&J VINTAGE: Your order ${invoiceNumber} for GHc ${amount} has been received and is being processed for delivery. Thank you for shopping with us!`;
     return this.sendSMS(phone, message);
   }
 
   async sendPaymentReceived(phone, invoiceNumber, amount) {
-    const message = `J&J VINTAGE: Payment received for order ${invoiceNumber} (GHc ${amount}). We are preparing your luxury package for dispatch!`;
+    const message = `J&J VINTAGE: Payment received for order ${invoiceNumber} (GHc ${amount}). Your order has been received and is being processed for delivery!`;
     return this.sendSMS(phone, message);
   }
 
   async sendOrderStatusUpdate(phone, invoiceNumber, status) {
-    const message = `J&J VINTAGE: Your order ${invoiceNumber} status has been updated to: ${status.toUpperCase()}.`;
+    const message = `J&J VINTAGE: Your order ${invoiceNumber} status update: ${status.toUpperCase()}. It is being processed for delivery!`;
     return this.sendSMS(phone, message);
   }
 }
