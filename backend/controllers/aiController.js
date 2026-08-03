@@ -39,7 +39,7 @@ function generateLocalFallback(userQuery, products) {
   }
 
   if (maxBudget !== null) {
-    return `Here are our top luxury pieces from J&J Vintage matching your budget of GH₵ ${maxBudget}:`;
+    return `Here are our top luxury pieces from J&J Vintage matching your budget under GH₵ ${maxBudget}. Tap any piece below to view details, or let me know if you need help finding your exact size!`;
   }
 
   // 7. Size advice
@@ -49,17 +49,17 @@ function generateLocalFallback(userQuery, products) {
 
   // 8. Shipping / Delivery / Payment / Ghana details
   if (lower.match(/\b(ship|shipping|deliver|delivery|pay|payment|paystack|momo|mobile money)\b/)) {
-    return "We offer express tracked delivery across all cities in Ghana! We accept Mobile Money (MTN, Telecel/Vodafone, AT) and Bank Cards via Paystack, as well as Cash on Delivery.";
+    return "We offer express tracked delivery across all major cities in Ghana, including Accra, Kumasi, and Takoradi! We accept Mobile Money (MTN, Telecel/Vodafone, AT) and Bank Cards via Paystack, as well as Cash on Delivery.";
   }
   
   if (lower.includes('wedding') || lower.includes('gala') || lower.includes('party') || lower.includes('dinner')) {
-    return "For a special occasion like that, you want to make an unforgettable entrance! Here are our finest recommended pieces for your look:";
+    return "For a special occasion like a wedding or gala, you want to make an unforgettable entrance! Here are our finest curated couture pieces for your look. Would you like me to recommend matching shoes or accessories as well?";
   }
 
-  return "I am your J&J Vintage AI Assistant! I can help you with styling, outfit combinations, sizing, shipping, or answering any questions you have. What would you like to explore?";
+  return "I've curated these exquisite luxury pieces from J&J Vintage for you! Tap any item below to view full details, or let me know if you would like me to check available sizes.";
 }
 
-// Product Extractor for UI Cards (Only attached when shopping/products are requested)
+// Product Extractor for UI Cards
 function extractMatchingProducts(userQuery, products) {
   const lower = userQuery.toLowerCase();
 
@@ -72,7 +72,7 @@ function extractMatchingProducts(userQuery, products) {
   let isShoppingQuery = lower.match(/\b(buy|shop|outfit|recommend|wear|price|cost|item|jacket|shoe|dress|sneaker|gown|coat|watch|bag|shirt|pants|men|women|kids?)\b/);
 
   if (!isShoppingQuery && maxBudget === null) {
-    return []; // Return NO product cards for casual chat like "how are u"
+    return [];
   }
 
   let matches = products.filter((p) => {
@@ -150,9 +150,9 @@ Catalog Context:
 ${catalogSummary}
 
 Core Guidelines:
-1. Answer ANY user question directly, warmly, intelligently, and comprehensively from all angles (exactly like ChatGPT and Gemini).
-2. If the user asks a casual question (e.g. "how are u?", "tell me a joke", "what is your name?"), answer naturally and warmly like a friend. Do NOT force sales pitches.
-3. If the user asks a fashion, styling, or shopping question, naturally integrate advice and mention J&J Vintage products with prices in GH₵.`;
+1. Always write complete, polished, well-structured sentences. NEVER end a response mid-sentence or abruptly at a colon.
+2. If answering a shopping or outfit question, always end with an inviting follow-up question (e.g. "Would you like me to recommend matching accessories, check available sizes, or guide your checkout?").
+3. If the user asks a casual question (e.g. "how are u?", "tell me a joke", "what is your name?"), answer naturally and warmly like a friend without forcing sales pitches.`;
 
     let aiReplyText = null;
     let engineUsed = null;
@@ -169,21 +169,21 @@ Core Guidelines:
             model: 'llama-3.3-70b-versatile',
             messages: [
               { role: 'system', content: systemPrompt },
-              ...(history || []).slice(-4).map((h) => ({
+              ...(history || []).slice(-6).map((h) => ({
                 role: h.role === 'user' ? 'user' : 'assistant',
                 content: h.content,
               })),
               { role: 'user', content: userMessage },
             ],
             temperature: 0.7,
-            max_tokens: 500,
+            max_tokens: 1000,
           },
           {
             headers: {
               Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
               'Content-Type': 'application/json',
             },
-            timeout: 8000,
+            timeout: 10000,
           }
         );
 
@@ -213,6 +213,10 @@ Core Guidelines:
                 parts: [{ text: `${systemPrompt}\n\nUser Question: ${userMessage}` }],
               },
             ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 1000,
+            },
           },
           { timeout: 8000 }
         );

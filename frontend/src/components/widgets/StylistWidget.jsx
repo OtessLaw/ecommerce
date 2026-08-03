@@ -144,11 +144,11 @@ export default function StylistWidget() {
       }));
 
       if (maxBudget !== null) {
-        text = `Here are our best luxury pieces for your budget under GH₵ ${maxBudget}:`;
+        text = `Here are our best luxury pieces for your budget under GH₵ ${maxBudget}. Tap any item below to view full details and sizing!`;
       } else if (lower.includes('gala') || lower.includes('wedding') || lower.includes('party')) {
-        text = "For an elegant evening out, here is the stunning outfit combination I recommend:";
+        text = "For an elegant evening out or wedding gala, here are the stunning outfit combinations I recommend. Tap any piece below to view details, or let me know if you need help finding your fit!";
       } else {
-        text = "Here are the top curated pieces from our J&J Vintage collection matching your style request:";
+        text = "Here are the top curated pieces from our J&J Vintage collection matching your style request. Would you like me to help you check available sizes or matching accessories?";
       }
     }
 
