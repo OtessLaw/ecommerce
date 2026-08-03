@@ -4,6 +4,7 @@ import { FiSearch, FiShoppingBag, FiHeart, FiUser, FiMenu, FiX, FiShield, FiLogO
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const categories = [
   'Men',
@@ -24,6 +25,7 @@ export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
   const { itemCount, setIsCartOpen } = useCart();
   const { wishlist } = useWishlist();
+  const { currency, setCurrency, currencies } = useCurrency();
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -97,8 +99,19 @@ export default function Navbar() {
             </RouterLink>
           </nav>
 
-          {/* Right Actions: Search, Wishlist, Cart, Profile */}
-          <div className="flex items-center space-x-5">
+          {/* Right Actions: Currency, Search, Wishlist, Cart, Profile */}
+          <div className="flex items-center space-x-4">
+            {/* Currency Selector */}
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="bg-[#1A1A1A] text-[#D4AF37] text-xs font-extrabold rounded-lg px-2 py-1.5 border border-[#2A2A2A] focus:outline-none focus:border-[#D4AF37] uppercase cursor-pointer"
+            >
+              <option value="GHS">GH₵ GHS</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+            </select>
             {/* Search input */}
             <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center relative">
               <input

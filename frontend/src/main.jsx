@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import App from './App';
 import './index.css';
 
@@ -16,23 +17,25 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <App />
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  style: {
-                    background: '#141414',
-                    color: '#fff',
-                    border: '1px solid #2A2A2A',
-                    fontSize: '12px',
-                    fontFamily: 'Outfit, sans-serif',
-                  },
-                }}
-              />
-            </WishlistProvider>
-          </CartProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <App />
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    style: {
+                      background: '#141414',
+                      color: '#fff',
+                      border: '1px solid #2A2A2A',
+                      fontSize: '12px',
+                      fontFamily: 'Outfit, sans-serif',
+                    },
+                  }}
+                />
+              </WishlistProvider>
+            </CartProvider>
+          </CurrencyProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

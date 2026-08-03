@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiHeart, FiShoppingBag, FiTruck, FiRefreshCw, FiShield, FiCheck, FiShare2 } from 'react-icons/fi';
+import { FiStar, FiHeart, FiShoppingBag, FiTruck, FiRefreshCw, FiShield, FiSliders } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useCurrency } from '../context/CurrencyContext';
+import SizeCalculatorModal from '../components/product/SizeCalculatorModal';
+import ProductReviews from '../components/product/ProductReviews';
 import API from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -15,9 +18,11 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [isSizeCalcOpen, setIsSizeCalcOpen] = useState(false);
 
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     fetchProduct();
@@ -63,6 +68,14 @@ export default function ProductDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+      {/* Size Calculator Modal */}
+      <SizeCalculatorModal
+        isOpen={isSizeCalcOpen}
+        onClose={() => setIsSizeCalcOpen(false)}
+        onSelectSize={(sz) => setSelectedSize(sz)}
+        availableSizes={product.sizes || []}
+      />
+
       {/* Product Top Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Gallery */}
@@ -115,9 +128,9 @@ export default function ProductDetail() {
 
           {/* Price */}
           <div className="flex items-baseline space-x-3 pt-2 border-t border-[#2A2A2A]">
-            <span className="text-3xl font-extrabold text-[#D4AF37]">GH₵ {displayPrice.toLocaleString()}</span>
+            <span className="text-3xl font-extrabold text-[#D4AF37]">{formatPrice(displayPrice)}</span>
             {product.salePrice > 0 && product.price > product.salePrice && (
-              <span className="text-lg text-gray-500 line-through">GH₵ {product.price.toLocaleString()}</span>
+              <span className="text-lg text-gray-500 line-through">{formatPrice(product.price)}</span>
             )}
           </div>
 
@@ -151,12 +164,24 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Sizes */}
+          {/* Sizes + Size Calculator Button */}
           {product.sizes?.length > 0 && (
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-gray-300 uppercase">
-                Size: <span className="text-[#D4AF37]">{selectedSize}</span>
-              </label>
+              <div className="flex justify-between items-center">
+                <label className="block text-xs font-bold text-gray-300 uppercase">
+                  Size: <span className="text-[#D4AF37]">{selectedSize}</span>
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSizeCalcOpen(true)}
+                  className="text-xs text-[#D4AF37] hover:underline font-bold flex items-center space-x-1"
+                >
+                  <FiSliders size={14} />
+                  <span>FIND MY EXACT SIZE</span>
+                </button>
+              </div>
+
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((s) => (
                   <button
@@ -203,8 +228,8 @@ export default function ProductDetail() {
 
             <button
               onClick={() => toggleWishlist(product)}
-              className={`p-4 rounded-xl border border-[#2A2A2A] transition ${
-                isLiked ? 'bg-red-600 text-white border-red-600' : 'bg-[#141414] text-gray-300 hover:text-white'
+              className={`p-4 rounded-xl border transition ${
+                isLiked ? 'bg-red-500/10 text-red-500 border-red-500/40' : 'bg-[#141414] border-[#2A2A2A] text-gray-400 hover:text-white'
               }`}
             >
               <FiHeart size={20} className={isLiked ? 'fill-current' : ''} />
@@ -212,18 +237,21 @@ export default function ProductDetail() {
           </div>
 
           {/* Value props */}
-          <div className="grid grid-cols-2 gap-4 pt-6 border-t border-[#2A2A2A] text-xs text-gray-400">
-            <div className="flex items-center space-x-2">
-              <FiTruck className="text-[#D4AF37]" size={16} />
-              <span>Complimentary Express Shipping</span>
+          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#2A2A2A] text-center text-xs text-gray-400">
+            <div className="space-y-1">
+              <FiTruck className="mx-auto text-[#D4AF37]" size={20} />
+              <p className="font-semibold text-white">Express Delivery</p>
+              <p className="text-[10px]">Tracked shipping in Ghana</p>
             </div>
-            <div className="flex items-center space-x-2">
-              <FiRefreshCw className="text-[#D4AF37]" size={16} />
-              <span>14-Day Complimentary Returns</span>
+            <div className="space-y-1">
+              <FiShield className="mx-auto text-[#D4AF37]" size={20} />
+              <p className="font-semibold text-white">100% Authentic</p>
+              <p className="text-[10px]">Handcrafted materials</p>
             </div>
-            <div className="flex items-center space-x-2">
-              <FiShield className="text-[#D4AF37]" size={16} />
-              <span>Paystack Secured Transaction</span>
+            <div className="space-y-1">
+              <FiRefreshCw className="mx-auto text-[#D4AF37]" size={20} />
+              <p className="font-semibold text-white">14-Day Returns</p>
+              <p className="text-[10px]">Hassle-free exchanges</p>
             </div>
           </div>
         </div>

@@ -15,12 +15,17 @@ import TrackOrder from './pages/TrackOrder';
 import CustomerDashboard from './pages/CustomerDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 
+import StylistWidget from './components/widgets/StylistWidget';
+import SocialProofToast from './components/widgets/SocialProofToast';
+
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-[#0B0B0B] text-white">
       <ScrollToTop />
       <Navbar />
       <CartDrawer />
+      <StylistWidget />
+      <SocialProofToast />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
