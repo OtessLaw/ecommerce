@@ -55,22 +55,23 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Mobile Menu Icon */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-gray-300 hover:text-white p-2"
-          >
-            {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* Mobile Menu & Logo */}
+          <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden text-gray-300 hover:text-white p-1.5 shrink-0"
+            >
+              {mobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+            </button>
 
-          {/* Logo */}
-          <RouterLink to="/" className="flex items-center space-x-2">
-            <span className="font-display font-extrabold text-2xl tracking-widest text-white">
-              J&J <span className="gold-gradient-text">VINTAGE</span>
-            </span>
-          </RouterLink>
+            <RouterLink to="/" className="flex items-center space-x-1 shrink-0">
+              <span className="font-display font-extrabold text-base sm:text-2xl tracking-wider text-white">
+                J&J <span className="gold-gradient-text">VINTAGE</span>
+              </span>
+            </RouterLink>
+          </div>
 
           {/* Desktop Categories Dropdown / Links */}
           <nav className="hidden lg:flex items-center space-x-4 text-xs font-semibold">
@@ -100,18 +101,19 @@ export default function Navbar() {
           </nav>
 
           {/* Right Actions: Currency, Search, Wishlist, Cart, Profile */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
             {/* Currency Selector */}
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="bg-[#1A1A1A] text-[#D4AF37] text-xs font-extrabold rounded-lg px-2 py-1.5 border border-[#2A2A2A] focus:outline-none focus:border-[#D4AF37] uppercase cursor-pointer"
+              className="bg-[#1A1A1A] text-[#D4AF37] text-[11px] sm:text-xs font-extrabold rounded-lg px-1.5 py-1 border border-[#2A2A2A] focus:outline-none uppercase cursor-pointer"
             >
-              <option value="GHS">GH₵ GHS</option>
-              <option value="USD">$ USD</option>
-              <option value="EUR">€ EUR</option>
-              <option value="GBP">£ GBP</option>
+              <option value="GHS">GH₵</option>
+              <option value="USD">$</option>
+              <option value="EUR">€</option>
+              <option value="GBP">£</option>
             </select>
+
             {/* Search input */}
             <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center relative">
               <input
@@ -125,10 +127,10 @@ export default function Navbar() {
             </form>
 
             {/* Wishlist */}
-            <RouterLink to="/customer/wishlist" className="relative p-2 text-gray-300 hover:text-[#D4AF37] transition">
-              <FiHeart size={20} />
+            <RouterLink to="/customer/wishlist" className="relative p-1.5 text-gray-300 hover:text-[#D4AF37] transition">
+              <FiHeart size={18} />
               {wishlist.length > 0 && (
-                <span className="absolute top-0 right-0 bg-[#D4AF37] text-black font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-[#D4AF37] text-black font-extrabold text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center">
                   {wishlist.length}
                 </span>
               )}
@@ -137,11 +139,11 @@ export default function Navbar() {
             {/* Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-gray-300 hover:text-[#D4AF37] transition"
+              className="relative p-1.5 text-gray-300 hover:text-[#D4AF37] transition"
             >
-              <FiShoppingBag size={20} />
+              <FiShoppingBag size={18} />
               {itemCount > 0 && (
-                <span className="absolute top-0 right-0 bg-[#D4AF37] text-black font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
+                <span className="absolute -top-1 -right-1 bg-[#D4AF37] text-black font-extrabold text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center">
                   {itemCount}
                 </span>
               )}
@@ -151,9 +153,9 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center space-x-1 p-2 text-gray-300 hover:text-[#D4AF37] transition focus:outline-none"
+                className="flex items-center space-x-1 p-1.5 text-gray-300 hover:text-[#D4AF37] transition focus:outline-none"
               >
-                <FiUser size={20} />
+                <FiUser size={18} />
               </button>
 
               {userDropdownOpen && (
@@ -245,11 +247,59 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#141414] border-t border-[#2A2A2A] px-4 pt-4 pb-6 space-y-4">
+        <div className="lg:hidden bg-[#141414] border-t border-[#2A2A2A] px-4 pt-4 pb-6 space-y-4 animate-fadeIn">
+          {/* Sign In & Account Options in Mobile Drawer */}
+          <div className="border-b border-[#2A2A2A] pb-3">
+            {user ? (
+              <div className="flex justify-between items-center bg-[#1A1A1A] p-3 rounded-xl border border-[#2A2A2A]">
+                <div>
+                  <p className="text-xs font-bold text-white truncate">{user.name}</p>
+                  <p className="text-[10px] text-gray-400">{user.email}</p>
+                </div>
+                <div className="flex space-x-3">
+                  <RouterLink
+                    to="/customer/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-xs font-bold text-[#D4AF37] hover:underline"
+                  >
+                    Dashboard
+                  </RouterLink>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-xs font-bold text-red-400 hover:underline"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <RouterLink
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-[#D4AF37] text-black font-extrabold text-xs uppercase shadow-gold"
+                >
+                  <FiUser size={14} />
+                  <span>SIGN IN</span>
+                </RouterLink>
+                <RouterLink
+                  to="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] text-white font-extrabold text-xs uppercase"
+                >
+                  <span>REGISTER</span>
+                </RouterLink>
+              </div>
+            )}
+          </div>
+
           <RouterLink
             to="/track-order"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-[#D4AF37] text-black font-extrabold text-xs uppercase tracking-wider shadow-gold"
+            className="flex items-center justify-center space-x-2 w-full py-3 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-extrabold text-xs uppercase tracking-wider"
           >
             <FiTruck size={16} />
             <span>TRACK ORDER LOGISTICS</span>
