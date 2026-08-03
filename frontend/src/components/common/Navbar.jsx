@@ -73,19 +73,19 @@ export default function Navbar() {
           </RouterLink>
 
           {/* Desktop Categories Dropdown / Links */}
-          <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
-            {categories.slice(0, 7).map((cat) => (
+          <nav className="hidden lg:flex items-center space-x-4 text-xs font-semibold">
+            {['Men', 'Women', 'Kids', 'Shoes', 'Sneakers', 'Bags', 'Accessories', 'Jewelry'].map((cat) => (
               <RouterLink
                 key={cat}
                 to={`/shop?category=${encodeURIComponent(cat)}`}
-                className="text-gray-300 hover:text-[#D4AF37] transition-colors duration-200 uppercase tracking-widest text-xs"
+                className="text-gray-300 hover:text-[#D4AF37] transition-colors duration-200 uppercase tracking-wider"
               >
                 {cat}
               </RouterLink>
             ))}
             <RouterLink
               to="/shop?isFlashSale=true"
-              className="text-[#D4AF37] font-bold uppercase tracking-widest text-xs animate-pulse"
+              className="text-[#D4AF37] font-extrabold uppercase tracking-wider text-xs animate-pulse"
             >
               SALE 🔥
             </RouterLink>

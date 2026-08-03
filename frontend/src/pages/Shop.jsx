@@ -98,7 +98,7 @@ export default function Shop() {
           {searchParam && <p className="text-xs text-gray-400 mt-1">Search results for: "{searchParam}"</p>}
         </div>
 
-        {/* Sorting Dropdown */}
+        {/* Sorting Dropdown & Mobile Filter Button */}
         <div className="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
           <button
             onClick={() => setMobileFilterOpen(true)}
@@ -125,6 +125,56 @@ export default function Shop() {
         </div>
       </div>
 
+      {/* Category Pills Selector Bar */}
+      <div className="flex items-center space-x-2 overflow-x-auto pb-3 pt-1 no-scrollbar border-b border-[#2A2A2A]">
+        <button
+          onClick={() => {
+            setSelectedCategory('');
+            setSearchParams({});
+          }}
+          className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider whitespace-nowrap transition-all ${
+            selectedCategory === '' && !flashSaleParam
+              ? 'bg-[#D4AF37] text-black shadow-gold'
+              : 'bg-[#141414] text-gray-300 border border-[#2A2A2A] hover:border-white'
+          }`}
+        >
+          ✨ ALL ITEMS
+        </button>
+        {[
+          { name: 'Men', icon: '👔' },
+          { name: 'Women', icon: '👗' },
+          { name: 'Kids', icon: '🧒' },
+          { name: 'Shoes', icon: '👠' },
+          { name: 'Sneakers', icon: '👟' },
+          { name: 'Bags', icon: '👜' },
+          { name: 'Accessories', icon: '🕶️' },
+          { name: 'Jewelry', icon: '💎' },
+          { name: 'Beauty', icon: '💄' },
+          { name: 'Sale', icon: '🔥' },
+        ].map((cat) => (
+          <button
+            key={cat.name}
+            onClick={() => {
+              if (cat.name === 'Sale') {
+                setSearchParams({ isFlashSale: 'true' });
+                setSelectedCategory('');
+              } else {
+                setSearchParams({ category: cat.name });
+                setSelectedCategory(cat.name);
+              }
+            }}
+            className={`px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider whitespace-nowrap transition-all flex items-center space-x-1.5 ${
+              (selectedCategory === cat.name || (cat.name === 'Sale' && flashSaleParam === 'true'))
+                ? 'bg-[#D4AF37] text-black shadow-gold'
+                : 'bg-[#141414] text-gray-300 border border-[#2A2A2A] hover:border-white'
+            }`}
+          >
+            <span>{cat.icon}</span>
+            <span>{cat.name}</span>
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar Filters */}
         <aside className="hidden lg:block space-y-6 bg-[#141414] p-6 rounded-2xl border border-[#2A2A2A] h-fit">
@@ -137,11 +187,11 @@ export default function Shop() {
 
           {/* Department Category */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-gray-300 uppercase">Department</h4>
+            <h4 className="text-xs font-bold text-gray-300 uppercase">Department Category</h4>
             <div className="space-y-1">
               <button
                 onClick={() => setSelectedCategory('')}
-                className={`block w-full text-left text-xs py-1 px-2 rounded ${
+                className={`block w-full text-left text-xs py-1.5 px-2.5 rounded-lg ${
                   selectedCategory === '' ? 'bg-[#D4AF37] text-black font-bold' : 'text-gray-400 hover:text-white'
                 }`}
               >
@@ -151,7 +201,7 @@ export default function Shop() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`block w-full text-left text-xs py-1 px-2 rounded ${
+                  className={`block w-full text-left text-xs py-1.5 px-2.5 rounded-lg ${
                     selectedCategory === cat ? 'bg-[#D4AF37] text-black font-bold' : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -181,7 +231,7 @@ export default function Shop() {
 
           {/* Price Range */}
           <div className="space-y-2 pt-4 border-t border-[#2A2A2A]">
-            <h4 className="text-xs font-bold text-gray-300 uppercase">Price Range (₦)</h4>
+            <h4 className="text-xs font-bold text-gray-300 uppercase">Price Range</h4>
             <div className="flex space-x-2">
               <input
                 type="number"
@@ -227,7 +277,7 @@ export default function Shop() {
             <GridSkeleton count={6} />
           ) : products.length === 0 ? (
             <div className="text-center py-20 bg-[#141414] rounded-2xl border border-[#2A2A2A] space-y-4">
-              <p className="text-gray-400 text-sm">No luxury products match your selected filters.</p>
+              <p className="text-gray-400 text-sm">No luxury products match your selected category.</p>
               <button
                 onClick={clearAllFilters}
                 className="gold-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider"
@@ -268,6 +318,61 @@ export default function Shop() {
           )}
         </main>
       </div>
+
+      {/* Mobile Filter Drawer */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/80 backdrop-blur-sm lg:hidden">
+          <div className="bg-[#141414] border-t border-[#2A2A2A] rounded-t-3xl p-6 space-y-6 max-h-[85vh] overflow-y-auto animate-fadeIn">
+            <div className="flex justify-between items-center border-b border-[#2A2A2A] pb-3">
+              <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">FILTER BY CATEGORY</h3>
+              <button onClick={() => setMobileFilterOpen(false)} className="text-gray-400 hover:text-white p-1">
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-gray-300 uppercase">Select Department Category</h4>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedCategory('');
+                    setMobileFilterOpen(false);
+                  }}
+                  className={`p-3 rounded-xl text-xs font-bold text-left border ${
+                    selectedCategory === '' ? 'bg-[#D4AF37] text-black border-[#D4AF37]' : 'bg-[#1A1A1A] border-[#2A2A2A] text-white'
+                  }`}
+                >
+                  ✨ All Items
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setMobileFilterOpen(false);
+                    }}
+                    className={`p-3 rounded-xl text-xs font-bold text-left border ${
+                      selectedCategory === cat ? 'bg-[#D4AF37] text-black border-[#D4AF37]' : 'bg-[#1A1A1A] border-[#2A2A2A] text-white'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                clearAllFilters();
+                setMobileFilterOpen(false);
+              }}
+              className="w-full bg-[#1A1A1A] border border-[#2A2A2A] text-gray-300 py-3 rounded-xl text-xs font-bold uppercase"
+            >
+              RESET FILTERS
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
