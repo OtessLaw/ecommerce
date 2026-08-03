@@ -171,98 +171,79 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#0B0B0B] text-white">
-      {/* Dedicated Admin Header Bar (Mobile & Desktop) */}
-      <header className="bg-[#141414] border-b border-[#2A2A2A] sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex justify-between items-center">
+
+      {/* ── DEDICATED ADMIN HEADER ── */}
+      <header className="bg-[#141414] border-b border-[#2A2A2A] sticky top-0 z-40 px-4 sm:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-            className="lg:hidden p-2 rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] text-[#D4AF37] hover:text-white"
+            className="lg:hidden p-2 rounded-xl bg-[#1A1A1A] border border-[#2A2A2A] text-[#D4AF37]"
           >
             {mobileSidebarOpen ? <FiClose size={20} /> : <FiCatFolder size={20} />}
           </button>
-
-          <div className="flex items-center space-x-2">
-            <span className="font-display font-extrabold text-base sm:text-xl tracking-wider text-white">
-              J&J <span className="gold-gradient-text">ADMIN PORTAL</span>
-            </span>
-          </div>
+          <span className="font-display font-extrabold text-base sm:text-xl tracking-wider text-white">
+            J&J <span className="gold-gradient-text">ADMIN PORTAL</span>
+          </span>
         </div>
-
-        <div className="flex items-center space-x-3">
-          <Link
-            to="/"
-            className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center space-x-1 bg-[#1A1A1A] border border-[#2A2A2A] px-3 py-1.5 rounded-xl"
-          >
-            <span>Exit to Storefront ↗</span>
-          </Link>
-        </div>
+        <Link
+          to="/"
+          className="text-xs font-bold text-[#D4AF37] bg-[#1A1A1A] border border-[#2A2A2A] px-3 py-1.5 rounded-xl hover:underline"
+        >
+          Exit to Storefront ↗
+        </Link>
       </header>
 
-      {/* Admin Mobile Sidebar Drawer Overlay */}
+      {/* ── MOBILE SIDEBAR OVERLAY ── */}
       {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-xs" onClick={() => setMobileSidebarOpen(false)} />
-          <div className="relative w-72 max-w-[80vw] bg-[#141414] h-full shadow-2xl z-10 overflow-y-auto animate-fadeIn p-4 border-r border-[#2A2A2A]">
-            <div className="flex justify-between items-center pb-4 border-b border-[#2A2A2A] mb-4">
-              <span className="text-xs font-bold uppercase text-[#D4AF37]">ADMIN NAVIGATION</span>
-              <button onClick={() => setMobileSidebarOpen(false)} className="text-gray-400 hover:text-white p-1">
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          <div className="absolute inset-0 bg-black/80" onClick={() => setMobileSidebarOpen(false)} />
+          <div className="relative w-72 max-w-[80vw] bg-[#141414] h-full overflow-y-auto border-r border-[#2A2A2A] p-4 z-10">
+            <div className="flex justify-between items-center pb-3 border-b border-[#2A2A2A] mb-4">
+              <span className="text-xs font-bold uppercase text-[#D4AF37]">Admin Navigation</span>
+              <button onClick={() => setMobileSidebarOpen(false)} className="text-gray-400 hover:text-white">
                 <FiClose size={20} />
               </button>
             </div>
-
             <AdminSidebar
               activeTab={activeTab}
-              setActiveTab={(tab) => {
-                setActiveTab(tab);
-                setMobileSidebarOpen(false);
-              }}
-              counts={{
-                products: products.length,
-                orders: orders.length,
-                users: users.length,
-              }}
+              setActiveTab={(tab) => { setActiveTab(tab); setMobileSidebarOpen(false); }}
+              counts={{ products: products.length, orders: orders.length, users: users.length }}
             />
           </div>
         </div>
       )}
 
+      {/* ── PAGE CONTENT ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Sidebar Menu (Desktop) */}
-          <div className="hidden lg:block w-full lg:w-64">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block w-64 shrink-0">
             <AdminSidebar
               activeTab={activeTab}
-              setActiveTab={(tab) => {
-                setActiveTab(tab);
-                setMobileSidebarOpen(false);
-              }}
-              counts={{
-                products: products.length,
-                orders: orders.length,
-                users: users.length,
-              }}
+              setActiveTab={(tab) => { setActiveTab(tab); setMobileSidebarOpen(false); }}
+              counts={{ products: products.length, orders: orders.length, users: users.length }}
             />
           </div>
 
-          {/* Main Content Area */}
-          <main className="flex-1 space-y-6">
-            {/* Header Title */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#141414] p-6 rounded-2xl border border-[#2A2A2A] gap-4">
-              <div className="flex items-center space-x-3">
-                <div>
-                  <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">J&J VINTAGE EXECUTIVE PORTAL</span>
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight mt-0.5">
-                    {activeTab === 'overview' && 'ANALYTICS OVERVIEW'}
-                    {activeTab === 'products' && 'PRODUCT CATALOG MANAGER'}
-                    {activeTab === 'categories' && 'CATEGORY & DEPARTMENT MANAGER'}
-                    {activeTab === 'coupons' && 'COUPONS & PROMO DISCOUNTS'}
-                    {activeTab === 'banners' && 'HOMEPAGE BANNERS & SLIDERS'}
-                    {activeTab === 'orders' && 'ORDERS FULFILLMENT & TRACKING'}
-                    {activeTab === 'users' && 'CLIENT DIRECTORY & STAFF ROLES'}
-                    {activeTab === 'settings' && 'STORE CONFIGURATION SETTINGS'}
-                  </h1>
-                </div>
+        {/* Main Content Area */}
+        <main className="flex-1 space-y-6">
+          {/* Header Title */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#141414] p-6 rounded-2xl border border-[#2A2A2A] gap-4">
+            <div className="flex items-center space-x-3">
+              <div>
+                <span className="text-[#D4AF37] text-xs font-bold uppercase tracking-widest">J&J VINTAGE EXECUTIVE PORTAL</span>
+                <h1 className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight mt-0.5">
+                  {activeTab === 'overview' && 'ANALYTICS OVERVIEW'}
+                  {activeTab === 'products' && 'PRODUCT CATALOG MANAGER'}
+                  {activeTab === 'categories' && 'CATEGORY & DEPARTMENT MANAGER'}
+                  {activeTab === 'coupons' && 'COUPONS & PROMO DISCOUNTS'}
+                  {activeTab === 'banners' && 'HOMEPAGE BANNERS & SLIDERS'}
+                  {activeTab === 'orders' && 'ORDERS FULFILLMENT & TRACKING'}
+                  {activeTab === 'users' && 'CLIENT DIRECTORY & STAFF ROLES'}
+                  {activeTab === 'settings' && 'STORE CONFIGURATION SETTINGS'}
+                </h1>
               </div>
+            </div>
 
             {activeTab === 'products' && (
               <button
@@ -930,7 +911,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
+      </div>
     </div>
-  </div>
-);
+  );
 }
