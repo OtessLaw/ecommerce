@@ -141,7 +141,13 @@ Guidelines:
               maxOutputTokens: 500,
             },
           },
-          { timeout: 8000 }
+          {
+            headers: {
+              'x-goog-api-key': process.env.GEMINI_API_KEY,
+              'Content-Type': 'application/json',
+            },
+            timeout: 8000,
+          }
         );
 
         const geminiText = geminiRes.data?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -151,7 +157,7 @@ Guidelines:
           console.log('[AI Pipeline] Engine Success: Google Gemini AI');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] Gemini AI failed/timed out. Failing over to Groq Llama 3...', err.message);
+        console.warn('[AI Pipeline] Gemini AI failed/timed out. Failing over to Groq Llama 3...', err.response?.data || err.message);
       }
     }
 
@@ -188,7 +194,7 @@ Guidelines:
           console.log('[AI Pipeline] Engine Success: Groq Llama 3');
         }
       } catch (err) {
-        console.warn('[AI Pipeline] Groq Llama 3 failed/timed out. Failing over to OpenAI GPT...', err.message);
+        console.warn('[AI Pipeline] Groq Llama 3 failed/timed out. Failing over to OpenAI GPT...', err.response?.data || err.message);
       }
     }
 
