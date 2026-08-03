@@ -3,7 +3,7 @@ const axios = require('axios');
 class FasreachService {
   constructor() {
     this.apiKey = process.env.FASREACH_API_KEY || 'bms_live_1785502841008_np14a00zkx';
-    this.senderId = process.env.FASREACH_SENDER_ID || 'FASREACH';
+    this.senderId = process.env.FASREACH_SENDER_ID || 'JNJVINTAGE';
     this.baseURL = 'https://fasreach.com/api/sms/send';
   }
 
@@ -13,7 +13,7 @@ class FasreachService {
       if (adminController.storeSettings && adminController.storeSettings.fasreachApiKey) {
         return {
           apiKey: adminController.storeSettings.fasreachApiKey || this.apiKey,
-          senderId: adminController.storeSettings.fasreachSenderId || this.senderId || 'FASREACH',
+          senderId: adminController.storeSettings.fasreachSenderId || this.senderId || 'JNJVINTAGE',
         };
       }
     } catch (e) {}
@@ -35,7 +35,7 @@ class FasreachService {
     }
 
     const { apiKey, senderId } = this.getCredentials();
-    const finalSender = customSender || senderId || 'FASREACH';
+    const finalSender = customSender || senderId || 'JNJVINTAGE';
     const cleanPhone = (recipient || '').toString().replace(/[^0-9]/g, '');
 
     if (!cleanPhone) {

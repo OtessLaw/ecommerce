@@ -11,12 +11,12 @@ let storeSettings = {
   paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY || 'pk_test_mock_paystack_public_key',
   paystackSecretKey: process.env.PAYSTACK_SECRET_KEY || 'sk_test_mock_paystack_secret_key',
   paystackMode: 'test',
-  fasreachApiKey: process.env.FASREACH_API_KEY || 'mock_fasreach_key',
-  fasreachSenderId: process.env.FASREACH_SENDER_ID || 'JJVINTAGE',
-  storeCurrency: 'NGN',
-  currencySymbol: '₦',
+  fasreachApiKey: process.env.FASREACH_API_KEY || 'bms_live_1785502841008_np14a00zkx',
+  fasreachSenderId: process.env.FASREACH_SENDER_ID || 'JNJVINTAGE',
+  storeCurrency: 'GHS',
+  currencySymbol: 'GH₵',
   supportEmail: 'support@jjvintage.com',
-  supportPhone: '+2348012345678',
+  supportPhone: '+233200000000',
 };
 
 // @desc    Get Admin Dashboard Stats & Analytics
