@@ -38,9 +38,18 @@ const getProducts = async (req, res) => {
         ];
       }
 
-      if (parentCategory) query.parentCategory = parentCategory;
-      if (category) query.category = category;
-      if (brand) query.brand = brand;
+      if (parentCategory || category) {
+        const catTerm = (parentCategory || category).trim();
+        const catRegex = new RegExp(catTerm, 'i');
+        query.$or = [
+          { parentCategory: catRegex },
+          { category: catRegex },
+          { tags: catRegex },
+          { title: catRegex },
+        ];
+      }
+
+      if (brand) query.brand = new RegExp(brand, 'i');
       if (isFeatured === 'true') query.isFeatured = true;
       if (isNewArrival === 'true') query.isNewArrival = true;
       if (isTrending === 'true') query.isTrending = true;
@@ -54,7 +63,7 @@ const getProducts = async (req, res) => {
 
       if (rating) query.rating = { $gte: Number(rating) };
       if (inStock === 'true') query.stock = { $gt: 0 };
-      if (color) query['colors.name'] = color;
+      if (color) query['colors.name'] = new RegExp(color, 'i');
       if (size) query.sizes = size;
 
       let sortOptions = {};
@@ -92,9 +101,26 @@ const getProducts = async (req, res) => {
       );
     }
 
-    if (parentCategory) filtered = filtered.filter((p) => p.parentCategory === parentCategory);
-    if (category) filtered = filtered.filter((p) => p.category.toLowerCase() === category.toLowerCase());
-    if (brand) filtered = filtered.filter((p) => p.brand.toLowerCase() === brand.toLowerCase());
+    if (parentCategory || category) {
+      const target = (parentCategory || category).toLowerCase();
+      const matched = filtered.filter(
+        (p) =>
+          p.parentCategory?.toLowerCase().includes(target) ||
+          p.category?.toLowerCase().includes(target) ||
+          p.tags?.some((t) => t.toLowerCase().includes(target)) ||
+          p.title?.toLowerCase().includes(target)
+      );
+      if (matched.length > 0) {
+        filtered = matched;
+      }
+    }
+
+    if (brand) {
+      const bTarget = brand.toLowerCase();
+      const bMatched = filtered.filter((p) => p.brand.toLowerCase().includes(bTarget));
+      if (bMatched.length > 0) filtered = bMatched;
+    }
+
     if (isFeatured === 'true') filtered = filtered.filter((p) => p.isFeatured);
     if (isNewArrival === 'true') filtered = filtered.filter((p) => p.isNewArrival);
     if (isTrending === 'true') filtered = filtered.filter((p) => p.isTrending);
